@@ -111,3 +111,7 @@ This repository hosts a free, open source single-page resume template built with
 ## Initial commit - Basic HTML/CSS structure for resume website
 
 Created the foundation of the resume website with HTML structure and CSS styling. Implemented the hero section, basic layout, and typography.
+
+## Initial commit - Basic HTML structure for resume
+
+Created the foundation of the resume website with basic HTML structure. Implemented a simple layout with sections for personal information, education, and work experience.
