@@ -9,6 +9,29 @@
     <!-- Preload critical assets -->
     <link rel="preload" href="bruno-profile.JPG" as="image">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style">
+    <link rel="preload" href="notification.mp3" as="audio" crossorigin="anonymous">
+
+    <!-- Explicitly load the notification sound -->
+    <audio id="preloaded-notification" preload="auto" style="display: none;">
+        <source src="notification.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Simple event listener for scroll to enable audio
+        document.addEventListener('scroll', function() {
+            console.log("DEBUG: Scroll detected, audio should be enabled now");
+        }, { once: true });
+
+        // Preload the notification sound
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log("DEBUG: DOMContentLoaded event fired in head section");
+            var audio = document.getElementById('preloaded-notification');
+            if (audio) {
+                console.log("DEBUG: Found preloaded audio element in head section");
+                audio.load();
+            }
+        });
+    </script>
     <style>
         :root {
             --primary: #3498db;
@@ -319,6 +342,12 @@
             transform: scale(1.05);
         }
 
+        .thinking-text {
+            color: #666;
+            font-style: italic;
+            margin-right: 5px;
+        }
+
         .thinking-dots span {
             display: inline-block;
             width: 5px;
@@ -344,6 +373,72 @@
             30% {
                 transform: translateY(-5px);
             }
+        }
+
+        /* Chat Notification Styles */
+        .chat-notification {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            width: 280px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            padding: 15px;
+            z-index: 999;
+            display: none; /* Hidden by default */
+            justify-content: space-between;
+            align-items: flex-start;
+            border-left: 4px solid var(--primary);
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(20px) scale(0.9);
+        }
+
+        @keyframes notification-slide-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .chat-notification p {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.4;
+            color: var(--dark);
+            flex: 1;
+        }
+
+        .chat-notification-close {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+            margin-left: 10px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+
+        .chat-notification-close:hover {
+            color: var(--dark);
+            transform: scale(1.2);
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        .chat-notification.hidden {
+            display: none !important;
         }
 
         .hero-content {
@@ -1519,10 +1614,54 @@
             <li><a href="#certifications">Certifications</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
-        <a href="Resume.pdf" download class="cv-download">
+        <a href="Resume.pdf" download="resume.pdf" type="application/pdf" class="cv-download" id="download-cv-btn">
             <i class="fas fa-download"></i>
             <span>Download CV</span>
         </a>
+
+        <script>
+            // Ensure the download works in all browsers
+            document.addEventListener('DOMContentLoaded', function() {
+                var downloadBtn = document.getElementById('download-cv-btn');
+                if (downloadBtn) {
+                    downloadBtn.addEventListener('click', function(e) {
+                        // For browsers that don't support the download attribute
+                        var isIE = /*@cc_on!@*/false || !!document.documentMode;
+                        var isEdge = !isIE && !!window.StyleMedia;
+                        var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+                        if (isIE || isEdge || isSafari) {
+                            e.preventDefault();
+
+                            // Create a server-side approach with proper headers
+                            var xhr = new XMLHttpRequest();
+                            xhr.open('GET', 'Resume.pdf', true);
+                            xhr.responseType = 'blob';
+
+                            xhr.onload = function() {
+                                if (this.status === 200) {
+                                    // Create blob link to download
+                                    var blob = new Blob([this.response], { type: 'application/pdf' });
+                                    var url = window.URL.createObjectURL(blob);
+                                    var a = document.createElement('a');
+                                    a.style.display = 'none';
+                                    a.href = url;
+                                    a.download = 'resume.pdf';
+                                    document.body.appendChild(a);
+                                    a.click();
+
+                                    // Clean up
+                                    window.URL.revokeObjectURL(url);
+                                    document.body.removeChild(a);
+                                }
+                            };
+
+                            xhr.send();
+                        }
+                    });
+                }
+            });
+        </script>
     </div>
 </nav>
 
@@ -1733,8 +1872,8 @@
                     <p><i class="fas fa-star"></i> <strong></strong>Relevant Coursework:</strong></p>
                     <div class="coursework-grid">
                         <span class="course-item">Data Structures</span>
-                        <span class="course-item">Algorithms</span>
-                        <span class="course-item">Math & Physics Foundations</span>
+                        <span class="course-item">Algorithms Design & Analysis</span>
+                        <span class="course-item">Computer Networks</span>
                         <span class="course-item">Operating Systems</span>
                         <span class="course-item">Database Management</span>
                         <span class="course-item">Software Development</span>
@@ -1743,6 +1882,7 @@
                         <span class="course-item">Machine Learning</span>
                         <span class="course-item">Computer Networks</span>
                         <span class="course-item">Web Development</span>
+                        <span class="course-item">Pattern Recognition...</span>
                     </div>
                 </div>
             </div>
@@ -2008,7 +2148,7 @@
                     </div>
                 </div>
 
-                <form class="contact-form animate-fadeInUp delay-2" id="contactForm">
+                <form class="contact-form animate-fadeInUp delay-2" id="contactForm" action="https://formspree.io/f/myzkayrp" method="POST">
                     <h3><i class="fas fa-paper-plane"></i> Send Message</h3>
                     <div class="form-group">
                         <label for="name">Name</label>
@@ -3019,14 +3159,18 @@
                 <div class="chat-bubble-icon">
                     <i class="fas fa-comment"></i>
                 </div>
+                <div class="chat-notification">
+                    <p><strong>👋 Hi there!</strong> I'm Bruno's AI Assistant! Ask me about Bruno's skills and experience.</p>
+                    <button type="button" class="chat-notification-close"><i class="fas fa-times"></i></button>
+                </div>
                 <div class="chat-bubble-content">
                     <div class="chat-bubble-header">
-                        <span>Chat with Bruno</span>
+                        <span>Chat with Bruno's AI Assistant</span>
                         <button class="chat-close-btn"><i class="fas fa-times"></i></button>
                     </div>
                     <div class="chat-messages">
                         <div class="chat-message bot">
-                            <p>Hi, I'm Bruno! How can I help you?</p>
+                            <p>Hi there! I'm Bruno's AI Assistant. I can tell you all about Bruno's skills, experience, and projects. What would you like to know?</p>
                         </div>
                     </div>
                     <div class="chat-input-container">
@@ -3044,11 +3188,19 @@
             const chatInput = chatBubble.querySelector('.chat-input');
             const chatSendBtn = chatBubble.querySelector('.chat-send-btn');
             const chatMessages = chatBubble.querySelector('.chat-messages');
+            const chatNotification = chatBubble.querySelector('.chat-notification');
+            const chatNotificationCloseBtn = chatBubble.querySelector('.chat-notification-close');
+
+            // Notification handling is done in the separate script at the end of the file
 
             // Toggle chat window
             chatIcon.addEventListener('click', () => {
                 chatContent.classList.toggle('active');
                 chatIcon.classList.toggle('hidden');
+                if (chatNotification) {
+                    chatNotification.classList.add('hidden');
+                    // We no longer store the dismissed state since we want it to show on every page load
+                }
             });
 
             // Close chat window
@@ -3074,12 +3226,21 @@
                     // Scroll to bottom
                     chatMessages.scrollTop = chatMessages.scrollHeight;
 
-                    // Simulate thinking
+                    // Simulate thinking with improved indicator
                     chatMessages.innerHTML += `
                         <div class="chat-message bot thinking">
-                            <p><span class="thinking-dots"><span>.</span><span>.</span><span>.</span></span></p>
+                            <p>
+                                <span class="thinking-text">Bruno's AI is thinking</span>
+                                <span class="thinking-dots"><span>.</span><span>.</span><span>.</span></span>
+                            </p>
                         </div>
                     `;
+
+                    // Reset fallback mode indicator if it exists
+                    const existingIndicator = document.querySelector('.fallback-mode-indicator');
+                    if (existingIndicator) {
+                        existingIndicator.remove();
+                    }
 
                     // Get all previous messages for context
                     const messageElements = chatMessages.querySelectorAll('.chat-message:not(.thinking)');
@@ -3088,7 +3249,7 @@
                     // Add system message
                     messageHistory.push({
                         role: "system",
-                        content: "You are Bruno, an Information Technology expert with experience in web development, cloud infrastructure, and data science. When responding to questions, use first person ('I') as if you are Bruno himself. Be friendly, professional, and concise. Your background includes: 1) Deploying Laravel e-commerce sites on AWS EC2, 2) Designing and implementing AI models for income prediction, 3) Managing IT operations and developing monitoring dashboards, 4) Auditing web applications for security vulnerabilities. When asked about your experience or skills, provide specific examples from your work history. Keep responses concise and focused on the question asked."
+                        content: "You are Bruno's AI Assistant. Bruno is an Information Technology expert with experience in Agentic Tools, web development, cloud infrastructure, and data science. When responding to questions, use first person ('I') and always refer to yourself as 'Bruno's AI Assistant'. Be friendly, professional, and concise. Bruno's background includes: 1) Deploying Laravel e-commerce sites on AWS EC2, 2) Designing and implementing AI models for income prediction, 3) Managing IT operations and developing monitoring dashboards, 4) Auditing web applications for security vulnerabilities, 5) Developing custom software packages and extensions, most notably the Bagisto Mpesa package, 6) Bachelor of Technology in IT from Delhi Technological University. When asked about Bruno's experience or skills, provide specific examples from his work history. Keep responses concise and focused on the question asked."
                     });
 
                     // Add conversation history
@@ -3115,18 +3276,90 @@
                                 chatMessages.removeChild(thinkingMessage);
                             }
 
-                            // Add bot response
-                            chatMessages.innerHTML += `
-                                <div class="chat-message bot">
-                                    <p>${aiResponse}</p>
-                                </div>
-                            `;
+                            // Check if this is a fallback response
+                            const isFallback = Object.values(window.fallbackResponses || {}).includes(aiResponse);
+
+                            // Create a new message element for the bot response
+                            const botMessageDiv = document.createElement('div');
+                            botMessageDiv.className = 'chat-message bot';
+
+                            // Create paragraph for the text
+                            const messagePara = document.createElement('p');
+                            botMessageDiv.appendChild(messagePara);
+
+                            // Add the empty message div to the chat
+                            chatMessages.appendChild(botMessageDiv);
+
+                            // Function to simulate typing effect
+                            function typeMessage(text, element, speed = 30) {
+                                let i = 0;
+                                // Clear any existing content
+                                element.textContent = '';
+
+                                // Function to add one character at a time
+                                function addNextChar() {
+                                    if (i < text.length) {
+                                        // Add the next character
+                                        element.textContent += text.charAt(i);
+                                        i++;
+
+                                        // Scroll to bottom as text appears
+                                        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                                        // Random slight variation in typing speed for realism
+                                        const randomDelay = speed + Math.random() * 20 - 10;
+                                        setTimeout(addNextChar, randomDelay);
+                                    }
+                                }
+
+                                // Start the typing effect
+                                addNextChar();
+                            }
+
+                            // Start typing effect for the bot response
+                            typeMessage(aiResponse, messagePara);
+
+                            // Add fallback mode indicator if needed
+                            if (isFallback && !document.querySelector('.fallback-mode-indicator')) {
+                                const indicator = document.createElement('div');
+                                indicator.className = 'fallback-mode-indicator';
+                                indicator.innerHTML = `
+                                    <p>⚠️ Using simplified responses due to high demand. Some answers may be limited.</p>
+                                `;
+                                indicator.style.padding = '8px 12px';
+                                indicator.style.margin = '10px 0';
+                                indicator.style.backgroundColor = '#fff3cd';
+                                indicator.style.color = '#856404';
+                                indicator.style.borderRadius = '4px';
+                                indicator.style.fontSize = '12px';
+                                indicator.style.textAlign = 'center';
+
+                                // Insert after the chat messages but before the input
+                                const inputContainer = document.querySelector('.chat-input-container');
+                                inputContainer.parentNode.insertBefore(indicator, inputContainer);
+                            }
 
                             // Update saved conversation with bot response
                             messageHistory.push({ role: 'assistant', content: aiResponse });
 
                             // Send to Google Form for data collection
-                            saveConversation(messageHistory);
+                            // Format the entire conversation history
+                            const fullConversation = messageHistory.map(msg =>
+                                `${msg.role}: ${msg.content}`
+                            ).join('\n\n');
+
+                            // Get the last user message and bot response
+                            const lastUserMessage = message;
+                            const lastBotResponse = aiResponse;
+
+                            // Send to our chat collector
+                            window.sendChatToGoogleForm({
+                                timestamp: new Date().toISOString(),
+                                userMessage: lastUserMessage,
+                                botResponse: lastBotResponse + "\n\n--- FULL CONVERSATION ---\n\n" + fullConversation,
+                                userAgent: navigator.userAgent,
+                                referrer: document.referrer || 'Direct'
+                            });
 
                             // Scroll to bottom
                             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -3142,18 +3375,87 @@
                                 chatMessages.removeChild(thinkingMessage);
                             }
 
-                            // Add bot response with fallback
-                            chatMessages.innerHTML += `
-                                <div class="chat-message bot">
-                                    <p>${fallbackResponse}</p>
-                                </div>
-                            `;
+                            // Create a new message element for the fallback response
+                            const fallbackMessageDiv = document.createElement('div');
+                            fallbackMessageDiv.className = 'chat-message bot';
+
+                            // Create paragraph for the text
+                            const fallbackPara = document.createElement('p');
+                            fallbackMessageDiv.appendChild(fallbackPara);
+
+                            // Add the empty message div to the chat
+                            chatMessages.appendChild(fallbackMessageDiv);
+
+                            // Function to simulate typing effect (defined again to ensure it's in scope)
+                            function typeMessage(text, element, speed = 30) {
+                                let i = 0;
+                                // Clear any existing content
+                                element.textContent = '';
+
+                                // Function to add one character at a time
+                                function addNextChar() {
+                                    if (i < text.length) {
+                                        // Add the next character
+                                        element.textContent += text.charAt(i);
+                                        i++;
+
+                                        // Scroll to bottom as text appears
+                                        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                                        // Random slight variation in typing speed for realism
+                                        const randomDelay = speed + Math.random() * 20 - 10;
+                                        setTimeout(addNextChar, randomDelay);
+                                    }
+                                }
+
+                                // Start the typing effect
+                                addNextChar();
+                            }
+
+                            // Start typing effect for the fallback response
+                            typeMessage(fallbackResponse, fallbackPara);
+
+                            // Add fallback mode indicator if not already present
+                            if (!document.querySelector('.fallback-mode-indicator')) {
+                                const indicator = document.createElement('div');
+                                indicator.className = 'fallback-mode-indicator';
+                                indicator.innerHTML = `
+                                    <p>⚠️ Using simplified responses due to high demand. Some answers may be limited.</p>
+                                `;
+                                indicator.style.padding = '8px 12px';
+                                indicator.style.margin = '10px 0';
+                                indicator.style.backgroundColor = '#fff3cd';
+                                indicator.style.color = '#856404';
+                                indicator.style.borderRadius = '4px';
+                                indicator.style.fontSize = '12px';
+                                indicator.style.textAlign = 'center';
+
+                                // Insert after the chat messages but before the input
+                                const inputContainer = document.querySelector('.chat-input-container');
+                                inputContainer.parentNode.insertBefore(indicator, inputContainer);
+                            }
 
                             // Update saved conversation with bot response
                             messageHistory.push({ role: 'assistant', content: fallbackResponse });
 
                             // Send to Google Form for data collection
-                            saveConversation(messageHistory);
+                            // Format the entire conversation history
+                            const fullConversationFallback = messageHistory.map(msg =>
+                                `${msg.role}: ${msg.content}`
+                            ).join('\n\n');
+
+                            // Get the last user message and bot response
+                            const lastUserMessageFallback = message;
+                            const lastBotResponseFallback = fallbackResponse;
+
+                            // Send to our chat collector
+                            window.sendChatToGoogleForm({
+                                timestamp: new Date().toISOString(),
+                                userMessage: lastUserMessageFallback,
+                                botResponse: lastBotResponseFallback + "\n\n--- FULL CONVERSATION ---\n\n" + fullConversationFallback,
+                                userAgent: navigator.userAgent,
+                                referrer: document.referrer || 'Direct'
+                            });
 
                             // Scroll to bottom
                             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -3173,34 +3475,109 @@
             });
         });
     </script>
-    <!-- Initial commit - Basic HTML/CSS structure for resume website -->
-    <!-- Add responsive design and mobile optimization -->
-    <!-- Implement core JavaScript functionality -->
-    <!-- Add contact form with validation -->
-    <!-- Final polish and performance optimizations -->
+
+    <!-- Sound player script -->
+    <script src="play-sound.js"></script>
+
+    <!-- LLM chat script -->
+    <script src="llm-chat.js"></script>
+
+    <!-- Chat data collection script -->
+    <script src="chat-collector.js"></script>
+
+    <!-- Contact form script -->
+    <script src="contact-form.js"></script>
+
+    <!-- Simple notification script with sound -->
+    <script>
+        // Function to force sound to play
+        // Simple function to play the notification sound
+        function playSound() {
+            console.log("DEBUG: Playing notification sound");
+
+            // Use the function from play-sound.js
+            if (typeof window.playNotificationSound === 'function') {
+                window.playNotificationSound();
+            } else {
+                // Fallback if the function is not available
+                var audio = new Audio('notification.mp3');
+                audio.volume = 1.0;
+                audio.play();
+            }
+        }
+
+        // Add a scroll event listener to help with autoplay restrictions
+        document.addEventListener('scroll', function() {
+            console.log("DEBUG: User scrolled, audio should be enabled now");
+        });
+
+        // Show notification after 5 seconds on page load
+        window.addEventListener('load', function() {
+            console.log("DEBUG: Page loaded, setting up notification timer");
+
+            // Wait 5 seconds then show notification
+            setTimeout(function() {
+                console.log("DEBUG: Notification timeout triggered after 5 seconds");
+                // Show notification
+                var notification = document.querySelector('.chat-notification');
+                if (notification) {
+                    // Always show notification on page load, regardless of previous dismissals
+                    // Remove any classes that might hide the notification
+                    notification.classList.remove('hidden');
+                    notification.style.opacity = '1';
+                    notification.style.visibility = 'visible';
+
+                    // Display the notification immediately
+                    notification.style.display = 'flex';
+                    notification.style.animation = 'notification-slide-in 0.5s ease forwards';
+
+                    // Play the notification sound
+                    console.log("DEBUG: Notification is visible, now playing sound");
+
+                    // Add a click handler to the notification to play sound when clicked
+                    notification.addEventListener('click', function() {
+                        console.log("DEBUG: Notification clicked, playing sound");
+                        playSound();
+                    });
+
+                    // Play the notification sound
+                    playSound();
+
+                    // Try playing again after a short delay (helps with some browsers)
+                    setTimeout(playSound, 500);
+
+
+                }
+
+                // Add close button handler
+                var closeBtn = document.querySelector('.chat-notification-close');
+                if (closeBtn) {
+                    closeBtn.onclick = function(e) {
+                        e.stopPropagation();
+                        // Only hide the notification temporarily for this session
+                        notification.style.display = 'none';
+                        // Don't store any state that would prevent it from showing on next page load
+                        return false;
+                    };
+                }
+
+                // Add notification click handler
+                if (notification) {
+                    notification.onclick = function() {
+                        // Open chat
+                        var chatContent = document.querySelector('.chat-bubble-content');
+                        var chatIcon = document.querySelector('.chat-bubble-icon');
+
+                        if (chatContent) chatContent.classList.add('active');
+                        if (chatIcon) chatIcon.classList.add('hidden');
+
+                        // Hide notification
+                        notification.style.display = 'none';
+                    };
+                }
+            }, 5000); // 5 seconds delay
+        });
+    </script>
     <!-- Initial commit - Basic HTML structure for resume -->
-    <!-- Add basic CSS styling and typography -->
-    <!-- Implement responsive design for mobile devices -->
-    <!-- Add work experience section with timeline -->
-    <!-- Implement basic JavaScript functionality -->
-    <!-- Add skills section with progress bars -->
-    <!-- Add contact form with validation -->
-    <!-- Implement CSS Grid layout system -->
-    <!-- Add scroll animations with Intersection Observer -->
-    <!-- Implement performance optimizations -->
-    <!-- Add accessibility enhancements -->
-    <!-- Final polish and future-proofing -->
-    <!-- Initial commit - Basic HTML structure for resume -->
-    <!-- Add basic CSS styling and typography -->
-    <!-- Implement responsive design for mobile devices -->
-    <!-- Add work experience section with timeline -->
-    <!-- Implement basic JavaScript functionality -->
-    <!-- Add skills section with progress bars -->
-    <!-- Add contact form with validation -->
-    <!-- Implement CSS Grid layout system -->
-    <!-- Add scroll animations with Intersection Observer -->
-    <!-- Implement performance optimizations -->
-    <!-- Add accessibility enhancements -->
-    <!-- Final polish and future-proofing -->
 </body>
 </html>
