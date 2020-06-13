@@ -3053,3 +3053,11 @@ textarea.form-control {
     margin: 1rem 0;
     background-color: #f9f9f9;
 }
+
+/* Add work experience section with timeline */
+.updated {
+    display: block;
+    padding: 1rem;
+    margin: 1rem 0;
+    background-color: #f9f9f9;
+}
