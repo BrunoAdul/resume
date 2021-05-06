@@ -2989,3 +2989,11 @@ textarea.form-control {
     margin: 1rem 0;
     background-color: #f9f9f9;
 }
+
+/* Add contact form with validation */
+.updated {
+    display: block;
+    padding: 1rem;
+    margin: 1rem 0;
+    background-color: #f9f9f9;
+}
