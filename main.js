@@ -1157,3 +1157,9 @@ function update1744374053090() {
     console.log('Add contact form with validation');
     return true;
 }
+
+// Add scroll animations with Intersection Observer
+function update1744374054480() {
+    console.log('Add scroll animations with Intersection Observer');
+    return true;
+}

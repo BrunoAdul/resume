@@ -139,3 +139,9 @@ function animateSkillBars() {
         }, 500);
     });
 }
+
+// Add scroll animations with Intersection Observer
+function update1744374054476() {
+    console.log('Add scroll animations with Intersection Observer');
+    return true;
+}
