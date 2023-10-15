@@ -106,3 +106,8 @@ This repository hosts a free, open source single-page resume template built with
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/brunoadul/resume.git
+
+
+## Initial commit - Basic HTML/CSS structure for resume website
+
+Created the foundation of the resume website with HTML structure and CSS styling. Implemented the hero section, basic layout, and typography.
