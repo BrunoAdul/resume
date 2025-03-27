@@ -346,6 +346,64 @@
             }
         }
 
+        /* Chat Notification Styles */
+        .chat-notification {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            width: 250px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            padding: 12px 15px;
+            animation: notification-slide-in 0.5s ease forwards;
+            transform-origin: bottom right;
+            z-index: 999;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-left: 4px solid var(--primary);
+        }
+
+        @keyframes notification-slide-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .chat-notification p {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.4;
+            color: var(--dark);
+            flex: 1;
+        }
+
+        .chat-notification-close {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0;
+            margin-left: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .chat-notification-close:hover {
+            color: var(--dark);
+            transform: scale(1.2);
+        }
+
+        .chat-notification.hidden {
+            display: none;
+        }
+
         .hero-content {
             position: relative;
             z-index: 1;
@@ -3019,6 +3077,10 @@
                 <div class="chat-bubble-icon">
                     <i class="fas fa-comment"></i>
                 </div>
+                <div class="chat-notification">
+                    <p>Hi, I'm Bruno's AI Assistant! Ask me about Bruno's skills and experience.</p>
+                    <button class="chat-notification-close"><i class="fas fa-times"></i></button>
+                </div>
                 <div class="chat-bubble-content">
                     <div class="chat-bubble-header">
                         <span>Chat with Bruno's AI Assistant</span>
@@ -3026,7 +3088,7 @@
                     </div>
                     <div class="chat-messages">
                         <div class="chat-message bot">
-                            <p>Hi, I'm Bruno's AI Assistant's AI assistant. What would you like to know about him? How can I help you learn more about Bruno's experience and skills?</p>
+                            <p>Hi there! I'm Bruno's AI Assistant. I can tell you all about Bruno's skills, experience, and projects. What would you like to know?</p>
                         </div>
                     </div>
                     <div class="chat-input-container">
@@ -3044,11 +3106,43 @@
             const chatInput = chatBubble.querySelector('.chat-input');
             const chatSendBtn = chatBubble.querySelector('.chat-send-btn');
             const chatMessages = chatBubble.querySelector('.chat-messages');
+            const chatNotification = chatBubble.querySelector('.chat-notification');
+            const chatNotificationCloseBtn = chatBubble.querySelector('.chat-notification-close');
+
+            // Show notification after a short delay
+            setTimeout(() => {
+                if (chatNotification && !sessionStorage.getItem('notificationDismissed')) {
+                    chatNotification.style.display = 'flex';
+                }
+            }, 3000);
+
+            // Handle notification close button
+            if (chatNotificationCloseBtn) {
+                chatNotificationCloseBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    chatNotification.classList.add('hidden');
+                    sessionStorage.setItem('notificationDismissed', 'true');
+                });
+            }
+
+            // Handle clicking on the notification to open chat
+            if (chatNotification) {
+                chatNotification.addEventListener('click', () => {
+                    chatContent.classList.add('active');
+                    chatIcon.classList.add('hidden');
+                    chatNotification.classList.add('hidden');
+                    sessionStorage.setItem('notificationDismissed', 'true');
+                });
+            }
 
             // Toggle chat window
             chatIcon.addEventListener('click', () => {
                 chatContent.classList.toggle('active');
                 chatIcon.classList.toggle('hidden');
+                if (chatNotification) {
+                    chatNotification.classList.add('hidden');
+                    sessionStorage.setItem('notificationDismissed', 'true');
+                }
             });
 
             // Close chat window
