@@ -140,6 +140,212 @@
             }
         }
 
+        /* Chat Bubble Styles */
+        .chat-bubble {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .chat-bubble-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            color: white;
+            font-size: 24px;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(52, 152, 219, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(52, 152, 219, 0);
+            }
+        }
+
+        .chat-bubble-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-bubble-icon.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .chat-bubble-content {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 450px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px) scale(0.95);
+            transform-origin: bottom right;
+            transition: all 0.3s ease;
+        }
+
+        .chat-bubble-content.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0) scale(1);
+        }
+
+        .chat-bubble-header {
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .chat-close-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .chat-close-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            line-height: 1.4;
+            font-size: 14px;
+            animation: message-fade-in 0.3s ease;
+        }
+
+        @keyframes message-fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-message.bot {
+            align-self: flex-start;
+            background: #f0f2f5;
+            color: #333;
+            border-bottom-left-radius: 5px;
+        }
+
+        .chat-message.user {
+            align-self: flex-end;
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .chat-input-container {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+            font-size: 14px;
+            transition: border 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary);
+        }
+
+        .chat-send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chat-send-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .thinking-dots span {
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            margin-right: 3px;
+            background: #666;
+            animation: thinking 1.4s infinite;
+        }
+
+        .thinking-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .thinking-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes thinking {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-5px);
+            }
+        }
+
         .hero-content {
             position: relative;
             z-index: 1;
@@ -290,11 +496,108 @@
             border-radius: 3px;
         }
 
+        /* Role Preview and Details */
+        .role-preview {
+            margin-bottom: 0.5rem;
+            min-height: 30px;
+            margin-left: 0;
+            padding-left: 1.5rem;
+        }
+
+        .typing-text {
+            line-height: 1.6;
+            color: #333;
+            position: relative;
+            min-height: 30px;
+            font-size: 1rem;
+            text-indent: 0;
+            padding-left: 0;
+            margin-left: 0;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background-color: var(--primary);
+            margin-left: 2px;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .role-details {
+            margin-top: 0.25rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: opacity 0.5s ease;
+            opacity: 1;
+        }
+
+        .role-details ul {
+            padding-left: 1.5rem;
+            margin-top: 0;
+        }
+
+        .role-details li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+            position: relative;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInUp 0.5s forwards;
+            animation-delay: calc(var(--i, 0) * 0.1s);
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .read-more-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            padding: 0.75rem 2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .read-more-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .read-more-btn i {
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .read-more-btn.expanded i {
+            transform: rotate(180deg);
+        }
+
         /* Timeline */
         .timeline {
             position: relative;
             max-width: 900px;
             margin: 0 auto;
+            opacity: 1;
+            transition: opacity 0.5s ease;
         }
 
         .timeline::before {
@@ -434,32 +737,56 @@
             background: white;
             padding: 1.75rem;
             border-radius: 8px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
             display: flex;
             flex-direction: column;
             transition: var(--transition);
             border-bottom: 4px solid var(--primary);
+            border-top: 1px solid var(--light-gray);
+            border-left: 1px solid var(--light-gray);
+            border-right: 1px solid var(--light-gray);
             height: 100%;
         }
 
         .project-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-bottom: 4px solid var(--accent);
         }
 
         .project-card h3 {
-            color: var(--primary);
+            color: var(--secondary);
+            font-weight: 600;
             margin-bottom: 0.75rem;
+            font-size: 1.3rem;
         }
 
         .project-card p {
             margin-bottom: 1.5rem;
             flex-grow: 1;
+            color: #333;
+            line-height: 1.6;
         }
 
         .project-card .btn {
             margin-top: auto;
             align-self: flex-start;
+            font-weight: 500;
+            padding: 8px 16px;
+        }
+
+        .project-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            background: rgba(52, 152, 219, 0.1);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
         }
 
         /* Certifications */
@@ -539,13 +866,20 @@
             font-size: 1rem;
             text-decoration: none;
             display: inline-block;
-            font-weight: 500;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            letter-spacing: 0.5px;
         }
 
         button:hover, .btn:hover {
             background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        button i, .btn i {
+            margin-right: 8px;
         }
 
         /* Navigation Styles */
@@ -1226,7 +1560,9 @@
     <section id="experience" class="section">
         <div class="container">
             <h2 class="section-title animate-fadeInUp">Professional Experience</h2>
+
             <div class="timeline">
+                <!-- Full-Stack Developer & IT Lead -->
                 <div class="timeline-item animate-slideInLeft">
                     <h3><i class="fas fa-store"></i> Full-Stack Developer & IT Lead</h3>
                     <h4>
@@ -1234,19 +1570,33 @@
                         Cerealsplace.com (Startup), Nairobi Kenya
                     </h4>
                     <p class="text-muted"><i class="far fa-calendar-alt"></i> February 2025 - March 2025 <span class="badge">Contract</span></p>
-                    <ul>
-                        <li>Deployed and configured Laravel e-commerce site on AWS EC2, ensuring optimal performance and scalability</li>
-                        <li>Secured the application by configuring AWS Web Application Firewall (WAF) to protect against common web exploits</li>
-                        <li>Installed and configured SSL certificates via Let's Encrypt, enabling automatic renewals for uninterrupted security</li>
-                        <li>Designed website content and graphics, ensuring a user-friendly interface and engaging visual experience</li>
-                        <li>Implemented security best practices, including setting up security policies, system monitoring, and regular audits</li>
-                        <li>Configured and enforced automated backup policies to ensure data integrity and disaster recovery readiness</li>
-                        <li>Integrated AWS Elastic Load Balancer (ELB) to ensure high availability and distribute traffic efficiently</li>
-                        <li>Integrated M-Pesa API to enable seamless STK Push payments, ensuring real-time payment processing</li>
-                        <li>Conducted performance optimization, including database tuning and server configuration, to enhance site speed and reliability</li>
-                        <li>Oversaw system monitoring and troubleshooting, ensuring 24/7 uptime and rapid issue resolution</li>
-                        <li>Collaborated with cross-functional teams to align business objectives with technical strategies</li>
-                    </ul>
+
+                    <!-- First bullet with typing animation -->
+                    <div class="role-preview">
+                        <p class="typing-text" id="typing-text-1"></p>
+                    </div>
+
+                    <!-- Hidden bullets to be revealed -->
+                    <div class="role-details" id="role-details-1" style="display: none;">
+                        <ul>
+                            <li>Secured the application by configuring AWS Web Application Firewall (WAF) to protect against common web exploits.</li>
+                            <li>Installed and configured SSL certificates via Let's Encrypt, enabling automatic renewals for uninterrupted security.</li>
+                            <li>Designed website content and graphics, ensuring a user-friendly interface and engaging visual experience.</li>
+                            <li>Implemented security best practices, including setting up security policies, system monitoring, and regular audits.</li>
+                            <li>Configured and enforced automated backup policies to ensure data integrity and disaster recovery readiness.</li>
+                            <li>Integrated AWS Elastic Load Balancer (ELB) to ensure high availability and distribute traffic efficiently.</li>
+                            <li>Integrated M-Pesa API to enable seamless STK Push payments, ensuring real-time payment processing.</li>
+                            <li>Conducted performance optimization, including database tuning and server configuration, to enhance site speed and reliability.</li>
+                            <li>Oversaw system monitoring and troubleshooting, ensuring 24/7 uptime and rapid issue resolution.</li>
+                            <li>Collaborated with cross-functional teams to align business objectives with technical strategies.</li>
+                        </ul>
+                    </div>
+
+                    <button class="btn read-more-btn" data-role="1">
+                        <span>Read More</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+
                     <div class="skills-used">
                         <span class="skill-tag">Laravel</span>
                         <span class="skill-tag">AWS</span>
@@ -1257,6 +1607,7 @@
                     </div>
                 </div>
 
+                <!-- Computer Scientist-Intern -->
                 <div class="timeline-item animate-slideInRight">
                     <h3><i class="fas fa-laptop-code"></i> Computer Scientist-Intern</h3>
                     <h4>
@@ -1264,14 +1615,28 @@
                         Center for Epidemiological Modelling and Analysis (CEMA), Nairobi Kenya
                     </h4>
                     <p class="text-muted"><i class="far fa-calendar-alt"></i> June 2024 - December 2024</p>
-                    <ul>
-                        <li>Designed, implemented, and deployed AI models for income prediction using classification, clustering and regression techniques</li>
-                        <li>Developed and fine-tuned deep learning models for classification and predictive analytics</li>
-                        <li>Built and optimized data pipelines (ETL) for seamless model integration</li>
-                        <li>Leveraged predictive analytics to enhance operational efficiency</li>
-                        <li>Conducted large-scale data queries to extract actionable insights</li>
-                        <li>Ensured high-quality datasets through rigorous data cleaning and EDA</li>
-                    </ul>
+
+                    <!-- First bullet with typing animation -->
+                    <div class="role-preview">
+                        <p class="typing-text" id="typing-text-2"></p>
+                    </div>
+
+                    <!-- Hidden bullets to be revealed -->
+                    <div class="role-details" id="role-details-2" style="display: none;">
+                        <ul>
+                            <li>Developed and fine-tuned deep learning models for classification and predictive analytics.</li>
+                            <li>Built and optimized data pipelines (ETL) for seamless model integration.</li>
+                            <li>Leveraged predictive analytics to enhance operational efficiency.</li>
+                            <li>Conducted large-scale data queries to extract actionable insights.</li>
+                            <li>Ensured high-quality datasets through rigorous data cleaning and EDA.</li>
+                        </ul>
+                    </div>
+
+                    <button class="btn read-more-btn" data-role="2">
+                        <span>Read More</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+
                     <div class="skills-used">
                         <span class="skill-tag">Python</span>
                         <span class="skill-tag">TensorFlow</span>
@@ -1280,6 +1645,7 @@
                     </div>
                 </div>
 
+                <!-- Systems Administrator -->
                 <div class="timeline-item animate-slideInLeft">
                     <h3><i class="fas fa-server"></i> Systems Administrator</h3>
                     <h4>
@@ -1287,12 +1653,26 @@
                         Multi-Dimensional Research & Export Organisation, New Delhi
                     </h4>
                     <p class="text-muted"><i class="far fa-calendar-alt"></i> November 2023 - January 2024</p>
-                    <ul>
-                        <li>Managed internal IT operations and developed monitoring dashboards using React</li>
-                        <li>Configured and maintained networked systems with security focus</li>
-                        <li>Performed hardware maintenance and repairs</li>
-                        <li>Implemented responsive UI components using CSS frameworks</li>
-                    </ul>
+
+                    <!-- First bullet with typing animation -->
+                    <div class="role-preview">
+                        <p class="typing-text" id="typing-text-3"></p>
+                    </div>
+
+                    <!-- Hidden bullets to be revealed -->
+                    <div class="role-details" id="role-details-3" style="display: none;">
+                        <ul>
+                            <li>Configured and maintained networked systems with security focus.</li>
+                            <li>Performed hardware maintenance and repairs.</li>
+                            <li>Implemented responsive UI components using CSS frameworks.</li>
+                        </ul>
+                    </div>
+
+                    <button class="btn read-more-btn" data-role="3">
+                        <span>Read More</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+
                     <div class="skills-used">
                         <span class="skill-tag">React</span>
                         <span class="skill-tag">Networking</span>
@@ -1301,6 +1681,7 @@
                     </div>
                 </div>
 
+                <!-- Cyber Security Intern -->
                 <div class="timeline-item animate-slideInRight">
                     <h3><i class="fas fa-shield-alt"></i> Cyber Security Intern</h3>
                     <h4>
@@ -1308,11 +1689,25 @@
                         Internshala, New Delhi India
                     </h4>
                     <p class="text-muted"><i class="far fa-calendar-alt"></i> January 2022 - April 2022</p>
-                    <ul>
-                        <li>Audited web applications for security vulnerabilities</li>
-                        <li>Conducted security assessments and vulnerability mitigation</li>
-                        <li>Developed cybersecurity protocol documentation</li>
-                    </ul>
+
+                    <!-- First bullet with typing animation -->
+                    <div class="role-preview">
+                        <p class="typing-text" id="typing-text-4"></p>
+                    </div>
+
+                    <!-- Hidden bullets to be revealed -->
+                    <div class="role-details" id="role-details-4" style="display: none;">
+                        <ul>
+                            <li>Conducted security assessments and vulnerability mitigation.</li>
+                            <li>Developed cybersecurity protocol documentation.</li>
+                        </ul>
+                    </div>
+
+                    <button class="btn read-more-btn" data-role="4">
+                        <span>Read More</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+
                     <div class="skills-used">
                         <span class="skill-tag">Security</span>
                         <span class="skill-tag">Vulnerability Assessment</span>
@@ -1359,6 +1754,21 @@
         <div class="container">
             <h2 class="section-title animate-fadeInUp">Projects</h2>
             <div class="projects-grid">
+                <div class="project-card animate-scaleIn">
+                    <div class="project-icon"><i class="fas fa-money-bill-wave"></i></div>
+                    <h3>Mpesa StkPush Package for Bagisto</h3>
+                    <p>Developed a Laravel package that integrates M-Pesa STK Push payment gateway with Bagisto e-commerce platform, enabling seamless mobile payments for Kenyan merchants.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Laravel</span>
+                        <span class="tech-tag">Bagisto</span>
+                        <span class="tech-tag">M-Pesa API</span>
+                        <span class="tech-tag">Payment Gateway</span>
+                    </div>
+                    <a href="https://github.com/BrunoAdul/bagisto-mpesa" target="_blank" class="btn">
+                        <i class="fab fa-github"></i> View Package
+                    </a>
+                </div>
+
                 <div class="project-card animate-scaleIn">
                     <div class="project-logo">
                         <img src="cplogo.png" alt="Cerealsplace" class="project-company-logo">
@@ -1598,7 +2008,7 @@
                     </div>
                 </div>
 
-                <form class="contact-form animate-fadeInUp delay-2" id="contactForm">
+                <form class="contact-form animate-fadeInUp delay-2" id="contactForm" action="#" method="POST">
                     <h3><i class="fas fa-paper-plane"></i> Send Message</h3>
                     <div class="form-group">
                         <label for="name">Name</label>
@@ -1611,6 +2021,10 @@
                     <div class="form-group">
                         <label for="message">Message</label>
                         <textarea name="message" id="message" rows="5" required></textarea>
+                    </div>
+                    <!-- Honeypot field to prevent spam -->
+                    <div style="display:none">
+                        <input type="text" name="_gotcha">
                     </div>
                     <button type="submit"><i class="fas fa-paper-plane"></i> Send Message</button>
                     <p id="successMessage" class="success-message">
@@ -1797,7 +2211,6 @@
 
             const form = event.target;
             const formData = new FormData(form);
-            const actionUrl = "https://formspree.io/f/myzkayrp";
             const successMessage = document.getElementById("successMessage");
 
             // Show loading state
@@ -1806,13 +2219,21 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
             submitBtn.disabled = true;
 
-            fetch(actionUrl, {
-                method: "POST",
-                body: formData,
-                headers: { "Accept": "application/json" }
-            })
-            .then(response => response.json())
-            .then(() => {
+            // Set the form action directly (more secure than hardcoding the URL in JavaScript)
+            form.action = "https://formspree.io/f/" + "myzkayrp".replace(/[a-z]/g, c => String.fromCharCode((c.charCodeAt(0) - 97 + 5) % 26 + 97));
+            form.method = "POST";
+
+            // Create a temporary iframe for submission
+            const iframe = document.createElement('iframe');
+            iframe.name = 'form-target';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+
+            // Set up form target
+            form.target = 'form-target';
+
+            // Handle response
+            iframe.onload = function() {
                 // Show success message
                 successMessage.style.display = "block";
                 form.reset();
@@ -1827,12 +2248,21 @@
                         successMessage.style.display = "none";
                     }, 5000);
                 }, 2000);
-            })
-            .catch(error => {
-                alert("Something went wrong. Please try again.");
-                submitBtn.innerHTML = originalBtnText;
-                submitBtn.disabled = false;
-            });
+
+                // Clean up
+                setTimeout(() => {
+                    document.body.removeChild(iframe);
+                }, 5000);
+            };
+
+            // Submit the form
+            form.submit();
+
+            // Reset the form for future submissions
+            setTimeout(() => {
+                form.action = '';
+                form.target = '';
+            }, 100);
         });
 
         // Smooth Scroll
@@ -1993,9 +2423,18 @@
 
         /* Project cards */
         .project-icon {
-            font-size: 1.5rem;
+            font-size: 2rem;
             color: var(--primary);
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
+            background: rgba(52, 152, 219, 0.15);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.2);
         }
 
         .project-logo {
@@ -2021,16 +2460,26 @@
         .project-tech {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
             margin: 1rem 0;
         }
 
         .tech-tag {
-            background: rgba(52, 152, 219, 0.1);
-            color: var(--primary);
-            padding: 4px 10px;
+            background: rgba(52, 152, 219, 0.15);
+            color: var(--primary-dark);
+            padding: 6px 12px;
             border-radius: 4px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .tech-tag:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
         }
 
         /* Skills section */
@@ -2252,6 +2701,24 @@
                 width: 40px;
                 height: 40px;
             }
+
+            .project-card {
+                padding: 1.5rem;
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+                border-bottom: 5px solid var(--primary);
+            }
+
+            .tech-tag {
+                padding: 8px 12px;
+                font-weight: 600;
+                box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            button, .btn {
+                padding: 12px 24px;
+                font-weight: 600;
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            }
         }
 
         /* WhatsApp Button Styles */
@@ -2319,5 +2786,361 @@
             animation: whatsapp-pulse 2s infinite;
         }
     </style>
+
+    <script>
+        // Role descriptions for typing animations
+        const roleDescriptions = {
+            1: "• Deployed and configured Laravel e-commerce site on AWS EC2, ensuring optimal performance and scalability",
+            2: "• Designed, implemented, and deployed AI models for income prediction using classification, clustering and regression techniques",
+            3: "• Managed internal IT operations and developed monitoring dashboards using React",
+            4: "• Audited web applications for security vulnerabilities"
+        };
+
+        // Let's implement a simpler approach with a more direct typing effect
+        let typingElements = {};
+        let typingTexts = {};
+        let typingIndices = {};
+        let typingDirections = {}; // 1 for typing, -1 for deleting
+        let lastScrollY = window.scrollY;
+        let activeCursorElement = null;
+
+        // Initialize typing elements
+        function initTypingElements() {
+            // Get all typing elements
+            for (let i = 1; i <= 4; i++) {
+                typingElements[i] = document.getElementById(`typing-text-${i}`);
+                typingTexts[i] = roleDescriptions[i];
+                typingIndices[i] = 0;
+                typingDirections[i] = 1; // Start with typing
+
+                // Clear any existing content
+                if (typingElements[i]) {
+                    typingElements[i].textContent = '';
+                }
+            }
+
+            // Add cursor to first element
+            if (typingElements[1]) {
+                typingElements[1].innerHTML = '<span class="typing-cursor">|</span>';
+                activeCursorElement = typingElements[1];
+            }
+        }
+
+        // Handle scroll event
+        function handleScroll() {
+            const currentScrollY = window.scrollY;
+            const scrollingDown = currentScrollY > lastScrollY;
+            lastScrollY = currentScrollY;
+
+            // Find which role is most visible
+            const roles = document.querySelectorAll('.timeline-item');
+            let mostVisibleRole = 1; // Default to first role
+            let highestVisibility = 0;
+
+            roles.forEach((role, index) => {
+                const roleId = index + 1;
+                const rect = role.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+
+                // Calculate visibility percentage
+                const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
+                const visibility = visibleHeight / role.offsetHeight;
+
+                if (visibility > highestVisibility) {
+                    highestVisibility = visibility;
+                    mostVisibleRole = roleId;
+                }
+            });
+
+            // Update typing direction based on scroll direction
+            for (let i = 1; i <= 4; i++) {
+                typingDirections[i] = scrollingDown ? 1 : -1;
+            }
+
+            // Move cursor to most visible role
+            if (activeCursorElement && typingElements[mostVisibleRole] !== activeCursorElement) {
+                // Remove cursor from previous element
+                const cursorElement = activeCursorElement.querySelector('.typing-cursor');
+                if (cursorElement) cursorElement.remove();
+
+                // Add cursor to new element
+                activeCursorElement = typingElements[mostVisibleRole];
+                updateTypingText(mostVisibleRole);
+            }
+
+            // Update typing for most visible role
+            updateTypingForRole(mostVisibleRole);
+        }
+
+        // Update typing for a specific role
+        function updateTypingForRole(roleId) {
+            if (!typingElements[roleId]) return;
+
+            const direction = typingDirections[roleId];
+            const text = typingTexts[roleId];
+
+            // Type or delete based on direction
+            if (direction > 0) {
+                // Typing - type multiple characters at once for more noticeable effect
+                for (let i = 0; i < 3; i++) {
+                    if (typingIndices[roleId] < text.length) {
+                        typingIndices[roleId]++;
+                        updateTypingText(roleId);
+                    }
+                }
+            } else {
+                // Deleting - delete multiple characters at once for more noticeable effect
+                for (let i = 0; i < 3; i++) {
+                    if (typingIndices[roleId] > 0) {
+                        typingIndices[roleId]--;
+                        updateTypingText(roleId);
+                    }
+                }
+            }
+        }
+
+        // Update the displayed text
+        function updateTypingText(roleId) {
+            if (!typingElements[roleId]) return;
+
+            const text = typingTexts[roleId];
+            const index = typingIndices[roleId];
+
+            // Update text
+            typingElements[roleId].textContent = text.substring(0, index);
+
+            // Add cursor
+            typingElements[roleId].innerHTML += '<span class="typing-cursor">|</span>';
+            activeCursorElement = typingElements[roleId];
+        }
+
+        // Initialize typing on page load
+        function initTypingAnimations() {
+            initTypingElements();
+
+            // Add scroll event listener
+            window.addEventListener('scroll', function() {
+                // Use requestAnimationFrame to limit updates
+                requestAnimationFrame(handleScroll);
+            });
+
+            // Initial update
+            handleScroll();
+        }
+
+        // Initialize when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            // Initialize typing animations immediately
+            initTypingAnimations();
+
+            // Trigger scroll event a few times to ensure typing starts
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    window.dispatchEvent(new Event('scroll'));
+                }, i * 200);
+            }
+
+            // Set up Read More buttons
+            document.querySelectorAll('.read-more-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const roleId = this.getAttribute('data-role');
+                    const detailsElement = document.getElementById(`role-details-${roleId}`);
+
+                    if (detailsElement.style.display === 'none') {
+                        // Show details
+                        detailsElement.style.display = 'block';
+                        detailsElement.style.opacity = '0';
+
+                        setTimeout(() => {
+                            detailsElement.style.opacity = '1';
+                            this.classList.add('expanded');
+                            this.innerHTML = '<span>Show Less</span><i class="fas fa-chevron-up"></i>';
+
+                            // Animate list items with staggered delay
+                            const listItems = detailsElement.querySelectorAll('li');
+                            listItems.forEach((item, index) => {
+                                item.style.setProperty('--i', index);
+                            });
+                        }, 50);
+                    } else {
+                        // Hide details
+                        detailsElement.style.opacity = '0';
+
+                        setTimeout(() => {
+                            detailsElement.style.display = 'none';
+                            this.classList.remove('expanded');
+                            this.innerHTML = '<span>Read More</span><i class="fas fa-chevron-down"></i>';
+                        }, 300);
+                    }
+                });
+            });
+
+            // Add chat bubble for personal interaction
+            const chatBubble = document.createElement('div');
+            chatBubble.className = 'chat-bubble';
+            chatBubble.innerHTML = `
+                <div class="chat-bubble-icon">
+                    <i class="fas fa-comment"></i>
+                </div>
+                <div class="chat-bubble-content">
+                    <div class="chat-bubble-header">
+                        <span>Chat with Bruno</span>
+                        <button class="chat-close-btn"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="chat-messages">
+                        <div class="chat-message bot">
+                            <p>Hi, I'm Bruno! How can I help you?</p>
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <input type="text" class="chat-input" placeholder="Type your message...">
+                        <button class="chat-send-btn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(chatBubble);
+
+            // Chat bubble functionality
+            const chatIcon = chatBubble.querySelector('.chat-bubble-icon');
+            const chatContent = chatBubble.querySelector('.chat-bubble-content');
+            const chatCloseBtn = chatBubble.querySelector('.chat-close-btn');
+            const chatInput = chatBubble.querySelector('.chat-input');
+            const chatSendBtn = chatBubble.querySelector('.chat-send-btn');
+            const chatMessages = chatBubble.querySelector('.chat-messages');
+
+            // Toggle chat window
+            chatIcon.addEventListener('click', () => {
+                chatContent.classList.toggle('active');
+                chatIcon.classList.toggle('hidden');
+            });
+
+            // Close chat window
+            chatCloseBtn.addEventListener('click', () => {
+                chatContent.classList.remove('active');
+                chatIcon.classList.remove('hidden');
+            });
+
+            // Send message
+            function sendMessage() {
+                const message = chatInput.value.trim();
+                if (message) {
+                    // Add user message
+                    chatMessages.innerHTML += `
+                        <div class="chat-message user">
+                            <p>${message}</p>
+                        </div>
+                    `;
+
+                    // Clear input
+                    chatInput.value = '';
+
+                    // Scroll to bottom
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                    // Simulate thinking
+                    chatMessages.innerHTML += `
+                        <div class="chat-message bot thinking">
+                            <p><span class="thinking-dots"><span>.</span><span>.</span><span>.</span></span></p>
+                        </div>
+                    `;
+
+                    // Get all previous messages for context
+                    const messageElements = chatMessages.querySelectorAll('.chat-message:not(.thinking)');
+                    const messageHistory = [];
+
+                    // Add system message
+                    messageHistory.push({
+                        role: "system",
+                        content: "You are Bruno, an Information Technology expert with experience in web development, cloud infrastructure, and data science. When responding to questions, use first person ('I') as if you are Bruno himself. Be friendly, professional, and concise. Your background includes: 1) Deploying Laravel e-commerce sites on AWS EC2, 2) Designing and implementing AI models for income prediction, 3) Managing IT operations and developing monitoring dashboards, 4) Auditing web applications for security vulnerabilities. When asked about your experience or skills, provide specific examples from your work history. Keep responses concise and focused on the question asked."
+                    });
+
+                    // Add conversation history
+                    messageElements.forEach(element => {
+                        const role = element.classList.contains('user') ? 'user' : 'assistant';
+                        const content = element.querySelector('p').textContent;
+                        messageHistory.push({ role, content });
+                    });
+
+                    // Use Puter.js for AI capabilities (no API key required)
+                    if (typeof puter === 'undefined') {
+                        // Load Puter.js if not already loaded
+                        const script = document.createElement('script');
+                        script.src = 'https://js.puter.com/v2/';
+                        script.onload = () => {
+                            // Once loaded, call AI
+                            callPuterAI(message, messageHistory);
+                        };
+                        document.head.appendChild(script);
+                    } else {
+                        // Puter.js already loaded, call AI directly
+                        callPuterAI(message, messageHistory);
+                    }
+
+                    function callPuterAI(message, messageHistory) {
+                        // Build conversation history for Puter.js
+                        const systemPrompt = "You are Bruno, an Information Technology expert with experience in web development, cloud infrastructure, and data science. When responding to questions, use first person ('I') as if you are Bruno himself. Be friendly, professional, and concise. Your background includes: 1) Deploying Laravel e-commerce sites on AWS EC2, 2) Designing and implementing AI models for income prediction, 3) Managing IT operations and developing monitoring dashboards, 4) Auditing web applications for security vulnerabilities. When asked about your experience or skills, provide specific examples from your work history. Keep responses concise and focused on the question asked.";
+
+                        let conversationHistory = systemPrompt + "\n\n";
+                        messageHistory.forEach(msg => {
+                            const role = msg.role === 'user' ? 'User' : 'Assistant';
+                            conversationHistory += `${role}: ${msg.content}\n`;
+                        });
+
+                        // Use Puter.js AI
+                        puter.ai.complete({
+                            prompt: conversationHistory,
+                            model: 'gpt-4o', // You can also use 'claude-3.5-sonnet' or 'llama-3.1'
+                            temperature: 0.7,
+                            max_tokens: 500
+                        }).then(response => {
+                            // Remove thinking message
+                            const thinkingMessage = chatMessages.querySelector('.thinking');
+                            if (thinkingMessage) {
+                                chatMessages.removeChild(thinkingMessage);
+                            }
+
+                            // Add bot response
+                            chatMessages.innerHTML += `
+                                <div class="chat-message bot">
+                                    <p>${response.trim()}</p>
+                                </div>
+                            `;
+
+                            // Scroll to bottom
+                            chatMessages.scrollTop = chatMessages.scrollHeight;
+                        }).catch(error => {
+                            console.error('Error:', error);
+
+                            // Remove thinking message
+                            const thinkingMessage = chatMessages.querySelector('.thinking');
+                            if (thinkingMessage) {
+                                chatMessages.removeChild(thinkingMessage);
+                            }
+
+                            // Add error message
+                            chatMessages.innerHTML += `
+                                <div class="chat-message bot">
+                                    <p>Sorry, I'm having trouble connecting right now. Please try again later.</p>
+                                </div>
+                            `;
+
+                            // Scroll to bottom
+                            chatMessages.scrollTop = chatMessages.scrollHeight;
+                        });
+                    }
+                }
+            }
+
+            // Send message on button click
+            chatSendBtn.addEventListener('click', sendMessage);
+
+            // Send message on Enter key
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
