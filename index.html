@@ -2771,20 +2771,20 @@
         }
     </style>
 
+    <!-- Load the chat scripts -->
+    <script src="chat-collector.js"></script>
+    <script src="llm-chat.js"></script>
+
     <script>
-        // Function to save conversations for later analysis
+        // Function to save conversations and send to Google Form
         function saveConversation(messageHistory) {
-            // Generate a unique conversation ID if not already set
-            if (!localStorage.getItem('currentConversationId')) {
-                const conversationId = 'conv_' + Date.now();
-                localStorage.setItem('currentConversationId', conversationId);
-            }
+            // Still save locally for backup
+            const timestamp = new Date().toISOString();
+            const conversationId = 'conv_' + Date.now();
 
-            const conversationId = localStorage.getItem('currentConversationId');
-
-            // Save the conversation
+            // Save the conversation locally
             localStorage.setItem(conversationId, JSON.stringify({
-                timestamp: new Date().toISOString(),
+                timestamp: timestamp,
                 messages: messageHistory,
                 userAgent: navigator.userAgent,
                 referrer: document.referrer
@@ -2796,158 +2796,33 @@
                 allConversations.push(conversationId);
                 localStorage.setItem('allConversations', JSON.stringify(allConversations));
             }
-        }
 
-        // Add a hidden admin panel with secure access
-        function addAdminPanel() {
-            // Create a hidden keyboard shortcut for admin access
-            // This is more secure than a visible button anyone can click
-            let keySequence = '';
-            const secretCode = 'bruno'; // Type 'bruno' quickly to access admin panel
+            // Get the latest user message and bot response
+            let userMessage = '';
+            let botResponse = '';
 
-            document.addEventListener('keydown', function(e) {
-                // Only respond to alphabetic keys
-                if (e.key && e.key.length === 1 && e.key.match(/[a-z]/i)) {
-                    keySequence += e.key.toLowerCase();
-
-                    // Keep only the last 5 characters
-                    if (keySequence.length > 5) {
-                        keySequence = keySequence.slice(-5);
-                    }
-
-                    // Check if the sequence matches
-                    if (keySequence === secretCode) {
-                        // Clear the sequence
-                        keySequence = '';
-
-                        // Ask for a second factor - your email address
-                        const emailCheck = prompt('Enter your email for verification:');
-                        if (emailCheck && emailCheck.toLowerCase() === 'brunoadul@gmail.com') {
-                            showConversations();
-                        }
-                    }
+            // Find the last user and bot messages
+            for (let i = messageHistory.length - 1; i >= 0; i--) {
+                if (messageHistory[i].role === 'user' && !userMessage) {
+                    userMessage = messageHistory[i].content;
                 }
-            });
-
-            // No visible button that could be discovered
-        }
-
-        function showConversations() {
-            // Create admin panel
-            const adminPanel = document.createElement('div');
-            adminPanel.style.position = 'fixed';
-            adminPanel.style.top = '50%';
-            adminPanel.style.left = '50%';
-            adminPanel.style.transform = 'translate(-50%, -50%)';
-            adminPanel.style.background = 'white';
-            adminPanel.style.padding = '20px';
-            adminPanel.style.borderRadius = '10px';
-            adminPanel.style.boxShadow = '0 0 20px rgba(0,0,0,0.2)';
-            adminPanel.style.zIndex = '2000';
-            adminPanel.style.maxWidth = '80%';
-            adminPanel.style.maxHeight = '80%';
-            adminPanel.style.overflow = 'auto';
-
-            // Add close button
-            const closeButton = document.createElement('button');
-            closeButton.textContent = 'Close';
-            closeButton.style.position = 'absolute';
-            closeButton.style.top = '10px';
-            closeButton.style.right = '10px';
-            closeButton.addEventListener('click', () => {
-                document.body.removeChild(adminPanel);
-            });
-            adminPanel.appendChild(closeButton);
-
-            // Add export button
-            const exportButton = document.createElement('button');
-            exportButton.textContent = 'Export All Data (CSV)';
-            exportButton.style.marginBottom = '20px';
-            exportButton.addEventListener('click', exportAllConversations);
-            adminPanel.appendChild(exportButton);
-
-            // Add conversation list
-            const allConversations = JSON.parse(localStorage.getItem('allConversations') || '[]');
-
-            if (allConversations.length === 0) {
-                const noData = document.createElement('p');
-                noData.textContent = 'No conversation data available.';
-                adminPanel.appendChild(noData);
-            } else {
-                allConversations.forEach(convId => {
-                    const convData = JSON.parse(localStorage.getItem(convId) || '{}');
-
-                    const convContainer = document.createElement('div');
-                    convContainer.style.border = '1px solid #eee';
-                    convContainer.style.padding = '10px';
-                    convContainer.style.marginBottom = '10px';
-                    convContainer.style.borderRadius = '5px';
-
-                    const convHeader = document.createElement('h3');
-                    convHeader.textContent = new Date(convData.timestamp).toLocaleString();
-                    convContainer.appendChild(convHeader);
-
-                    const convInfo = document.createElement('p');
-                    convInfo.textContent = `Referrer: ${convData.referrer || 'Direct'} | User Agent: ${convData.userAgent || 'Unknown'}`;
-                    convInfo.style.fontSize = '12px';
-                    convInfo.style.color = '#666';
-                    convContainer.appendChild(convInfo);
-
-                    const convMessages = document.createElement('div');
-                    convData.messages.forEach(msg => {
-                        const msgEl = document.createElement('p');
-                        msgEl.textContent = `${msg.role}: ${msg.content}`;
-                        msgEl.style.margin = '5px 0';
-                        msgEl.style.padding = '5px';
-                        msgEl.style.background = msg.role === 'user' ? '#f0f0f0' : '#e6f7ff';
-                        msgEl.style.borderRadius = '3px';
-                        convMessages.appendChild(msgEl);
-                    });
-                    convContainer.appendChild(convMessages);
-
-                    adminPanel.appendChild(convContainer);
-                });
+                if (messageHistory[i].role === 'assistant' && !botResponse) {
+                    botResponse = messageHistory[i].content;
+                }
+                if (userMessage && botResponse) break;
             }
 
-            document.body.appendChild(adminPanel);
-        }
-
-        function exportAllConversations() {
-            const allConversations = JSON.parse(localStorage.getItem('allConversations') || '[]');
-            let csvContent = "data:text/csv;charset=utf-8,";
-
-            // Add CSV header
-            csvContent += "Conversation ID,Timestamp,User Agent,Referrer,Role,Message Content\n";
-
-            allConversations.forEach(convId => {
-                const convData = JSON.parse(localStorage.getItem(convId) || '{}');
-
-                convData.messages.forEach(msg => {
-                    const row = [
-                        convId,
-                        convData.timestamp,
-                        `"${convData.userAgent || 'Unknown'}"`,
-                        `"${convData.referrer || 'Direct'}"`,
-                        msg.role,
-                        `"${msg.content.replace(/"/g, '""')}"`
-                    ];
-                    csvContent += row.join(',') + '\n';
+            // Send to Google Form if the function exists and we have both messages
+            if (window.sendChatToGoogleForm && userMessage) {
+                window.sendChatToGoogleForm({
+                    timestamp: timestamp,
+                    userMessage: userMessage,
+                    botResponse: botResponse || 'No response yet',
+                    userAgent: navigator.userAgent,
+                    referrer: document.referrer || 'Direct'
                 });
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "chat_conversations.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            }
         }
-
-        // Initialize admin panel when the page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            addAdminPanel();
-        });
 
         // Role descriptions for typing animations
         const roleDescriptions = {
@@ -3225,114 +3100,15 @@
                     // Save conversation to localStorage for later analysis
                     saveConversation(messageHistory);
 
-                    // Use a simpler approach with predefined responses
+                    // Use the LLM API for intelligent responses
                     handleChatMessage(message, messageHistory);
 
-                    function handleChatMessage(message, messageHistory) {
-                        // Define common responses based on keywords
-                        const responses = {
-                            // Experience and skills
-                            experience: "I have over 5 years of experience in IT, with expertise in web development, cloud infrastructure, and data science. I've worked on projects ranging from e-commerce platforms to AI-driven analytics systems.",
-                            skills: "My technical skills include: JavaScript/React for frontend, Python/Laravel for backend, AWS for cloud infrastructure, and various data science tools including TensorFlow and scikit-learn.",
+                    async function handleChatMessage(message, messageHistory) {
+                        // First, try to use the Hugging Face API
+                        try {
+                            // Call the LLM API to generate a response
+                            const aiResponse = await window.generateChatResponse(message, messageHistory);
 
-                            // Projects
-                            projects: "Some of my notable projects include: 1) An e-commerce platform built with Laravel and deployed on AWS EC2, 2) Income prediction models using classification and regression techniques, 3) Internal monitoring dashboards built with React, and 4) Security audits for web applications.",
-
-                            // Education
-                            education: "I have a Bachelor's degree in Computer Science with additional certifications in AWS Cloud Architecture and Data Science.",
-
-                            // Contact information
-                            contact: "You can reach me via email at brunoadul@gmail.com or connect with me on LinkedIn. I'm always open to discussing new opportunities and projects.",
-                            email: "My email is brunoadul@gmail.com. Feel free to reach out anytime!",
-
-                            // Work history
-                            work: "I've worked as a Software Developer at TechCorp, where I developed and maintained e-commerce solutions. I also served as a Data Analyst at DataInsights, where I built predictive models for income prediction.",
-
-                            // Technologies
-                            technologies: "I work with a range of technologies including: React, Vue.js, Laravel, Python, TensorFlow, AWS (EC2, S3, Lambda), Docker, and Git.",
-                            react: "I have extensive experience with React, having built several production applications including monitoring dashboards and e-commerce frontends.",
-                            python: "I use Python primarily for data analysis and machine learning, including building income prediction models using scikit-learn and TensorFlow.",
-
-                            // Availability and job search
-                            available: "Yes, I'm currently available for new opportunities, both full-time positions and freelance projects. I'm particularly interested in roles that combine web development and data science.",
-                            salary: "My salary expectations are flexible and depend on the specific role, company, and benefits package. I'd be happy to discuss this further in a direct conversation.",
-                            remote: "I'm comfortable working remotely and have done so effectively for several years. I have a well-equipped home office and am familiar with remote collaboration tools.",
-
-                            // Personal questions
-                            location: "I'm currently based in Nairobi, Kenya, but I'm open to remote work and relocation for the right opportunity.",
-                            hobbies: "Outside of work, I enjoy hiking, reading about new technologies, contributing to open-source projects, and playing chess.",
-
-                            // Default responses
-                            greeting: "Hello! I'm Bruno, an IT professional specializing in web development, cloud infrastructure, and data science. How can I help you today?",
-                            thanks: "You're welcome! If you have any other questions, feel free to ask.",
-                            default: "Thanks for your message. I'm Bruno, an IT professional with experience in web development, cloud infrastructure, and data science. I'd be happy to discuss how my skills might align with your needs."
-                        };
-
-                        // Process the message to determine the appropriate response
-                        const lowerMessage = message.toLowerCase();
-                        let responseText = "";
-
-                        // Check for greetings
-                        if (lowerMessage.match(/^(hi|hello|hey|greetings)/)) {
-                            responseText = responses.greeting;
-                        }
-                        // Check for thanks
-                        else if (lowerMessage.match(/(thank|thanks)/)) {
-                            responseText = responses.thanks;
-                        }
-                        // Check for specific topics
-                        else if (lowerMessage.includes("experience")) {
-                            responseText = responses.experience;
-                        }
-                        else if (lowerMessage.includes("skills")) {
-                            responseText = responses.skills;
-                        }
-                        else if (lowerMessage.includes("projects")) {
-                            responseText = responses.projects;
-                        }
-                        else if (lowerMessage.includes("education")) {
-                            responseText = responses.education;
-                        }
-                        else if (lowerMessage.includes("contact") || lowerMessage.includes("reach")) {
-                            responseText = responses.contact;
-                        }
-                        else if (lowerMessage.includes("email")) {
-                            responseText = responses.email;
-                        }
-                        else if (lowerMessage.includes("work history") || lowerMessage.includes("job")) {
-                            responseText = responses.work;
-                        }
-                        else if (lowerMessage.includes("technologies") || lowerMessage.includes("tech stack")) {
-                            responseText = responses.technologies;
-                        }
-                        else if (lowerMessage.includes("react")) {
-                            responseText = responses.react;
-                        }
-                        else if (lowerMessage.includes("python")) {
-                            responseText = responses.python;
-                        }
-                        else if (lowerMessage.includes("available") || lowerMessage.includes("hire") || lowerMessage.includes("looking for")) {
-                            responseText = responses.available;
-                        }
-                        else if (lowerMessage.includes("salary") || lowerMessage.includes("pay") || lowerMessage.includes("compensation")) {
-                            responseText = responses.salary;
-                        }
-                        else if (lowerMessage.includes("remote") || lowerMessage.includes("work from home")) {
-                            responseText = responses.remote;
-                        }
-                        else if (lowerMessage.includes("location") || lowerMessage.includes("where") || lowerMessage.includes("based")) {
-                            responseText = responses.location;
-                        }
-                        else if (lowerMessage.includes("hobby") || lowerMessage.includes("hobbies") || lowerMessage.includes("free time") || lowerMessage.includes("interests")) {
-                            responseText = responses.hobbies;
-                        }
-                        // Default response for other queries
-                        else {
-                            responseText = responses.default;
-                        }
-
-                        // Simulate thinking delay for more natural interaction
-                        setTimeout(() => {
                             // Remove thinking message
                             const thinkingMessage = chatMessages.querySelector('.thinking');
                             if (thinkingMessage) {
@@ -3342,17 +3118,46 @@
                             // Add bot response
                             chatMessages.innerHTML += `
                                 <div class="chat-message bot">
-                                    <p>${responseText}</p>
+                                    <p>${aiResponse}</p>
                                 </div>
                             `;
 
                             // Update saved conversation with bot response
-                            messageHistory.push({ role: 'assistant', content: responseText });
+                            messageHistory.push({ role: 'assistant', content: aiResponse });
+
+                            // Send to Google Form for data collection
                             saveConversation(messageHistory);
 
                             // Scroll to bottom
                             chatMessages.scrollTop = chatMessages.scrollHeight;
-                        }, 1500); // 1.5 second delay to simulate thinking
+                        } catch (error) {
+                            console.error("Error with LLM API:", error);
+
+                            // If the API fails, use the fallback response system
+                            const fallbackResponse = window.getFallbackResponse(message);
+
+                            // Remove thinking message
+                            const thinkingMessage = chatMessages.querySelector('.thinking');
+                            if (thinkingMessage) {
+                                chatMessages.removeChild(thinkingMessage);
+                            }
+
+                            // Add bot response with fallback
+                            chatMessages.innerHTML += `
+                                <div class="chat-message bot">
+                                    <p>${fallbackResponse}</p>
+                                </div>
+                            `;
+
+                            // Update saved conversation with bot response
+                            messageHistory.push({ role: 'assistant', content: fallbackResponse });
+
+                            // Send to Google Form for data collection
+                            saveConversation(messageHistory);
+
+                            // Scroll to bottom
+                            chatMessages.scrollTop = chatMessages.scrollHeight;
+                        }
                     }
                 }
             }
