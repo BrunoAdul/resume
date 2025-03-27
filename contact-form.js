@@ -33,6 +33,7 @@ async function sendContactToGoogleForm(formData) {
         const googleFormData = new FormData();
         
         // Map the form fields to Google Form fields with correct entry IDs
+        // Note: These should be updated with entry IDs from a contact-specific Google Form
         googleFormData.append('entry.354641663', formData.get('name')); // Name field
         googleFormData.append('entry.1797697467', formData.get('_replyto')); // Email field
         googleFormData.append('entry.2034195257', formData.get('message')); // Message field

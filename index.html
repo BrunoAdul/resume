@@ -2008,7 +2008,7 @@
                     </div>
                 </div>
 
-                <form class="contact-form animate-fadeInUp delay-2" id="contactForm" action="https://formspree.io/f/mleqnwkj" method="POST">
+                <form class="contact-form animate-fadeInUp delay-2" id="contactForm" action="https://formspree.io/f/myzkayrp" method="POST">
                     <h3><i class="fas fa-paper-plane"></i> Send Message</h3>
                     <div class="form-group">
                         <label for="name">Name</label>
@@ -3126,7 +3126,23 @@
                             messageHistory.push({ role: 'assistant', content: aiResponse });
 
                             // Send to Google Form for data collection
-                            saveConversation(messageHistory);
+                            // Format the entire conversation history
+                            const fullConversation = messageHistory.map(msg =>
+                                `${msg.role}: ${msg.content}`
+                            ).join('\n\n');
+
+                            // Get the last user message and bot response
+                            const lastUserMessage = message;
+                            const lastBotResponse = aiResponse;
+
+                            // Send to our chat collector
+                            window.sendChatToGoogleForm({
+                                timestamp: new Date().toISOString(),
+                                userMessage: lastUserMessage,
+                                botResponse: lastBotResponse + "\n\n--- FULL CONVERSATION ---\n\n" + fullConversation,
+                                userAgent: navigator.userAgent,
+                                referrer: document.referrer || 'Direct'
+                            });
 
                             // Scroll to bottom
                             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -3153,7 +3169,23 @@
                             messageHistory.push({ role: 'assistant', content: fallbackResponse });
 
                             // Send to Google Form for data collection
-                            saveConversation(messageHistory);
+                            // Format the entire conversation history
+                            const fullConversationFallback = messageHistory.map(msg =>
+                                `${msg.role}: ${msg.content}`
+                            ).join('\n\n');
+
+                            // Get the last user message and bot response
+                            const lastUserMessageFallback = message;
+                            const lastBotResponseFallback = fallbackResponse;
+
+                            // Send to our chat collector
+                            window.sendChatToGoogleForm({
+                                timestamp: new Date().toISOString(),
+                                userMessage: lastUserMessageFallback,
+                                botResponse: lastBotResponseFallback + "\n\n--- FULL CONVERSATION ---\n\n" + fullConversationFallback,
+                                userAgent: navigator.userAgent,
+                                referrer: document.referrer || 'Direct'
+                            });
 
                             // Scroll to bottom
                             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -3173,5 +3205,14 @@
             });
         });
     </script>
+
+    <!-- LLM chat script -->
+    <script src="llm-chat.js"></script>
+
+    <!-- Chat data collection script -->
+    <script src="chat-collector.js"></script>
+
+    <!-- Contact form script -->
+    <script src="contact-form.js"></script>
 </body>
 </html>
