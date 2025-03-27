@@ -62,12 +62,11 @@ function sendChatToGoogleForm(messageData) {
     const formData = new FormData();
 
     // Add the message data to the form using actual entry IDs from your Google Form
-    // Update these with the actual entry IDs from your form
-    formData.append('entry.1234567895', messageData.timestamp); // Timestamp field
-    formData.append('entry.1234567896', messageData.userMessage); // User message field
-    formData.append('entry.1234567897', messageData.botResponse); // Bot response field
-    formData.append('entry.1234567898', messageData.userAgent); // User agent field
-    formData.append('entry.1234567899', messageData.referrer); // Referrer field
+    formData.append('entry.354641663', messageData.timestamp); // Timestamp field
+    formData.append('entry.1797697467', messageData.userMessage); // User message field
+    formData.append('entry.2034195257', messageData.botResponse); // Bot response field
+    formData.append('entry.743421912', messageData.userAgent); // User agent field
+    formData.append('entry.1601164509', messageData.referrer); // Referrer field
 
     // Send the data to the Google Form
     fetch(`https://docs.google.com/forms/d/e/${FORM_CONFIG.formId}/formResponse`, {

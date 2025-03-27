@@ -32,13 +32,12 @@ async function sendContactToGoogleForm(formData) {
         // Create the data to send to Google Form
         const googleFormData = new FormData();
         
-        // Map the form fields to Google Form fields
-        // These should match the entry IDs in your Google Form
-        googleFormData.append('entry.1234567890', formData.get('name')); // Name field
-        googleFormData.append('entry.1234567891', formData.get('_replyto')); // Email field
-        googleFormData.append('entry.1234567892', formData.get('message')); // Message field
-        googleFormData.append('entry.1234567893', navigator.userAgent); // User agent
-        googleFormData.append('entry.1234567894', document.referrer || 'Direct'); // Referrer
+        // Map the form fields to Google Form fields with correct entry IDs
+        googleFormData.append('entry.354641663', formData.get('name')); // Name field
+        googleFormData.append('entry.1797697467', formData.get('_replyto')); // Email field
+        googleFormData.append('entry.2034195257', formData.get('message')); // Message field
+        googleFormData.append('entry.743421912', navigator.userAgent); // User agent
+        googleFormData.append('entry.1601164509', document.referrer || 'Direct'); // Referrer
         
         // Send to Google Form
         fetch(`https://docs.google.com/forms/d/e/${formId}/formResponse`, {
