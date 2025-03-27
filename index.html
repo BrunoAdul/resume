@@ -1531,13 +1531,18 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2024 Bruno Adul. All Rights Reserved.</p>
+            <p>&copy; <span id="currentYear"></span> Bruno Adul. All Rights Reserved.</p>
             <p>Information Technology Expert | Software Developer | Data Scientist | Prompt Engineer</p>
             <a href="#" class="back-to-top" aria-label="Back to top">
                 <i class="fas fa-arrow-up"></i>
             </a>
         </div>
     </footer>
+
+    <script>
+        // Set current year in footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
 
     <script>
         // Page Loading Animation
