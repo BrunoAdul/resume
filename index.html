@@ -1254,8 +1254,20 @@
                 </h4>
                 <p class="text-muted"><i class="fas fa-award"></i> ICCR Scholarship Awardee</p>
                 <div class="education-details">
-                    <p><i class="far fa-calendar-alt"></i> 2020 - 2024</p>
-                    <p><i class="fas fa-star"></i> Relevant Coursework: Data Structures, Algorithms, Database Management, Machine Learning, Web Development</p>
+                    <p><i class="fas fa-star"></i> <strong></strong>Relevant Coursework:</strong></p>
+                    <div class="coursework-grid">
+                        <span class="course-item">Data Structures</span>
+                        <span class="course-item">Algorithms</span>
+                        <span class="course-item">Math & Physics Foundations</span>
+                        <span class="course-item">Operating Systems</span>
+                        <span class="course-item">Database Management</span>
+                        <span class="course-item">Software Development</span>
+                        <span class="course-item">Distributed Systems</span>
+                        <span class="course-item">Deep Learning</span>
+                        <span class="course-item">Machine Learning</span>
+                        <span class="course-item">Computer Networks</span>
+                        <span class="course-item">Web Development</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1872,6 +1884,30 @@
 
         .education-details p {
             margin-bottom: 0.5rem;
+        }
+
+        /* Coursework grid */
+        .coursework-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .course-item {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .course-item:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         /* Project cards */
