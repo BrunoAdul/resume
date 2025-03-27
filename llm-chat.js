@@ -3,11 +3,40 @@
 
 // Configuration
 const HF_CONFIG = {
-  apiKey: "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", // You can leave this empty to use the free tier with rate limits
+  // For GitHub Pages deployment, we'll use environment variables through a proxy service
+  apiKey: "", // Will be loaded from the proxy service
   model: "HuggingFaceH4/zephyr-7b-beta", // Free, high-quality model
   maxTokens: 200, // Reasonable response length
   temperature: 0.7 // Slightly creative but mostly focused
 };
+
+// Function to securely get the API key
+async function getSecureApiKey() {
+  try {
+    // Use your actual Cloudflare Worker URL
+    const proxyUrl = "https://plain-base-b92a.webquantum3.workers.dev/api-key";
+
+    // Add a random parameter to prevent caching
+    const response = await fetch(`${proxyUrl}?t=${Date.now()}`, {
+      method: "GET",
+      headers: {
+        // Add a secret token that only your proxy knows
+        "X-Auth-Token": "bruno-resume-2024"
+      }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data && data.key) {
+        return data.key;
+      }
+    }
+    return "";
+  } catch (error) {
+    console.log("Error fetching API key, using free tier");
+    return "";
+  }
+}
 
 // System prompt that defines the assistant's personality and knowledge
 const SYSTEM_PROMPT = `You are Bruno, an Information Technology expert with experience in web development, cloud infrastructure, and data science. 
@@ -30,19 +59,22 @@ Keep responses concise and focused on the question asked.`;
  */
 async function generateChatResponse(userMessage, messageHistory) {
   try {
+    // Get the API key securely
+    const apiKey = await getSecureApiKey();
+
     // Format conversation history for the API
     let conversationText = SYSTEM_PROMPT + "\n\n";
-    
+
     // Add message history (limit to last 6 messages to save tokens)
     const recentMessages = messageHistory.slice(-6);
     recentMessages.forEach(msg => {
       const role = msg.role === 'user' ? 'User' : 'Assistant';
       conversationText += `${role}: ${msg.content}\n`;
     });
-    
+
     // Add the current user message
     conversationText += `User: ${userMessage}\nAssistant:`;
-    
+
     // Prepare the API request
     const response = await fetch(
       `https://api-inference.huggingface.co/models/${HF_CONFIG.model}`,
@@ -50,7 +82,7 @@ async function generateChatResponse(userMessage, messageHistory) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(HF_CONFIG.apiKey && { Authorization: `Bearer ${HF_CONFIG.apiKey}` })
+          ...(apiKey && { Authorization: `Bearer ${apiKey}` })
         },
         body: JSON.stringify({
           inputs: conversationText,

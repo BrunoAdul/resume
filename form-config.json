@@ -1,0 +1,10 @@
+{
+  "formId": "1FAIpQLSdCVnw9Y9RnGyNqNw9Ry8qYSYQ8BRZdVtGF9Z9J9Z9J9Z9J9Z",
+  "fields": {
+    "timestamp": "entry.123456789",
+    "userMessage": "entry.234567890",
+    "botResponse": "entry.345678901",
+    "userAgent": "entry.456789012",
+    "referrer": "entry.567890123"
+  }
+}

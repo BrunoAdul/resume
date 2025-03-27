@@ -2771,9 +2771,10 @@
         }
     </style>
 
-    <!-- Load the chat scripts -->
+    <!-- Load the scripts -->
     <script src="chat-collector.js"></script>
     <script src="llm-chat.js"></script>
+    <script src="contact-form.js"></script>
 
     <script>
         // Function to save conversations and send to Google Form
@@ -3097,8 +3098,7 @@
                         messageHistory.push({ role, content });
                     });
 
-                    // Save conversation to localStorage for later analysis
-                    saveConversation(messageHistory);
+                    // We'll handle saving in the handleChatMessage function
 
                     // Use the LLM API for intelligent responses
                     handleChatMessage(message, messageHistory);

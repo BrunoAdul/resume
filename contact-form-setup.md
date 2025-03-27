@@ -1,31 +1,32 @@
-# Setting Up Google Forms for Chat Data Collection
+# Setting Up Google Forms for Contact Form Data Collection
 
-This guide will help you set up a Google Form to collect chat data from your resume website.
+This guide will help you set up a Google Form to collect contact form submissions from your resume website.
 
 ## Step 1: Create a New Google Form
 
 1. Go to [Google Forms](https://forms.google.com/)
 2. Click on the "+" icon to create a new form
-3. Name your form "Resume Chat Data Collection"
+3. Name your form "Resume Contact Form Submissions"
 
 ## Step 2: Add Form Fields
 
 Add the following fields to your form:
 
-1. **Timestamp** (Short answer)
+1. **Name** (Short answer)
    - Make this field required
 
-2. **User Message** (Paragraph)
+2. **Email** (Short answer)
    - Make this field required
+   - Add email validation
 
-3. **Bot Response** (Paragraph)
+3. **Message** (Paragraph)
    - Make this field required
 
 4. **User Agent** (Paragraph)
-   - Make this field required
+   - Make this field optional
 
 5. **Referrer** (Short answer)
-   - Make this field required
+   - Make this field optional
 
 ## Step 3: Configure Form Settings
 
@@ -47,20 +48,20 @@ Add the following fields to your form:
    - Click "Get Link"
    - Look at the generated URL to find entry IDs like `entry.123456789`
 
-## Step 5: Update the chat-collector.js File
+## Step 5: Update the Cloudflare Worker
 
-1. Open `chat-collector.js` in your code editor
-2. Replace `YOUR_GOOGLE_FORM_ID` with your actual form ID
-3. Replace each `entry.XXXXXXXXX` with the corresponding field IDs from your form
+1. Open your Cloudflare Worker
+2. Update the `CONTACT_FORM_ID` value with your actual form ID
 
-## Step 6: Update Your index.html File
+## Step 6: Update the contact-form.js File
 
-Make sure to include the chat-collector.js script in your HTML and call the function when chat messages are exchanged.
+1. Open `contact-form.js` in your code editor
+2. Update each `entry.XXXXXXXXX` with the corresponding field IDs from your form
 
 ## Step 7: Test the Form Submission
 
 1. Visit your resume website
-2. Use the chat feature
+2. Fill out and submit the contact form
 3. Check your Google Form responses to ensure data is being collected
 
 ## Step 8: View and Analyze Data
@@ -68,11 +69,10 @@ Make sure to include the chat-collector.js script in your HTML and call the func
 1. Open your Google Form
 2. Click on "Responses" tab
 3. Click on the Google Sheets icon to view all responses in a spreadsheet
-4. You can now sort, filter, and analyze your chat data
+4. You can now sort, filter, and analyze your contact form submissions
 
-## Privacy Considerations
+## Important Notes
 
-1. Add a privacy notice to your website informing visitors that chat data is collected
-2. Do not collect personally identifiable information unless necessary
-3. Consider adding a checkbox for visitors to consent to data collection
-4. Regularly review and delete old data that is no longer needed
+1. The contact form will still submit to Formspree as a backup
+2. This dual submission approach ensures you never lose any contact form data
+3. You can compare the data in both systems to ensure everything is working correctly
