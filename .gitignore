@@ -1,5 +1,7 @@
 # Ignore sensitive files
 cloudflare-worker-with-keys.js
+api-config.json
+form-config.json
 
 # Ignore local environment files
 .env
