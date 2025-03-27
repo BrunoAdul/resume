@@ -3,7 +3,7 @@
 
 // Configuration
 const HF_CONFIG = {
-  apiKey: "", // You can leave this empty to use the free tier with rate limits
+  apiKey: "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", // You can leave this empty to use the free tier with rate limits
   model: "HuggingFaceH4/zephyr-7b-beta", // Free, high-quality model
   maxTokens: 200, // Reasonable response length
   temperature: 0.7 // Slightly creative but mostly focused
