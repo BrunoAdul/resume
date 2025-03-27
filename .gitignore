@@ -1,0 +1,27 @@
+# Ignore sensitive files
+cloudflare-worker-with-keys.js
+api-config.json
+form-config.json
+
+# Ignore local environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignore logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore OS specific files
+.DS_Store
+Thumbs.db
+
+# Ignore editor specific files
+.idea/
+.vscode/
+*.swp
+*.swo
