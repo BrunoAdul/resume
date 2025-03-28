@@ -3175,6 +3175,12 @@
                         </div>
                     `;
 
+                    // Reset fallback mode indicator if it exists
+                    const existingIndicator = document.querySelector('.fallback-mode-indicator');
+                    if (existingIndicator) {
+                        existingIndicator.remove();
+                    }
+
                     // Get all previous messages for context
                     const messageElements = chatMessages.querySelectorAll('.chat-message:not(.thinking)');
                     const messageHistory = [];
@@ -3209,12 +3215,35 @@
                                 chatMessages.removeChild(thinkingMessage);
                             }
 
+                            // Check if this is a fallback response
+                            const isFallback = Object.values(window.fallbackResponses || {}).includes(aiResponse);
+
                             // Add bot response
                             chatMessages.innerHTML += `
                                 <div class="chat-message bot">
                                     <p>${aiResponse}</p>
                                 </div>
                             `;
+
+                            // Add fallback mode indicator if needed
+                            if (isFallback && !document.querySelector('.fallback-mode-indicator')) {
+                                const indicator = document.createElement('div');
+                                indicator.className = 'fallback-mode-indicator';
+                                indicator.innerHTML = `
+                                    <p>⚠️ Using simplified responses due to high demand. Some answers may be limited.</p>
+                                `;
+                                indicator.style.padding = '8px 12px';
+                                indicator.style.margin = '10px 0';
+                                indicator.style.backgroundColor = '#fff3cd';
+                                indicator.style.color = '#856404';
+                                indicator.style.borderRadius = '4px';
+                                indicator.style.fontSize = '12px';
+                                indicator.style.textAlign = 'center';
+
+                                // Insert after the chat messages but before the input
+                                const inputContainer = document.querySelector('.chat-input-container');
+                                inputContainer.parentNode.insertBefore(indicator, inputContainer);
+                            }
 
                             // Update saved conversation with bot response
                             messageHistory.push({ role: 'assistant', content: aiResponse });
@@ -3258,6 +3287,26 @@
                                     <p>${fallbackResponse}</p>
                                 </div>
                             `;
+
+                            // Add fallback mode indicator if not already present
+                            if (!document.querySelector('.fallback-mode-indicator')) {
+                                const indicator = document.createElement('div');
+                                indicator.className = 'fallback-mode-indicator';
+                                indicator.innerHTML = `
+                                    <p>⚠️ Using simplified responses due to high demand. Some answers may be limited.</p>
+                                `;
+                                indicator.style.padding = '8px 12px';
+                                indicator.style.margin = '10px 0';
+                                indicator.style.backgroundColor = '#fff3cd';
+                                indicator.style.color = '#856404';
+                                indicator.style.borderRadius = '4px';
+                                indicator.style.fontSize = '12px';
+                                indicator.style.textAlign = 'center';
+
+                                // Insert after the chat messages but before the input
+                                const inputContainer = document.querySelector('.chat-input-container');
+                                inputContainer.parentNode.insertBefore(indicator, inputContainer);
+                            }
 
                             // Update saved conversation with bot response
                             messageHistory.push({ role: 'assistant', content: fallbackResponse });

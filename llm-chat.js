@@ -13,6 +13,17 @@ const HF_CONFIG = {
 // Function to securely get the API key
 async function getSecureApiKey() {
   try {
+    // Check if we're running on localhost
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+    // If we're on localhost, we might not be able to access the Cloudflare Worker
+    // So we'll immediately use fallback responses
+    if (isLocalhost) {
+      console.log("Running on localhost, using fallback responses");
+      // Return empty string to trigger fallback responses
+      return "";
+    }
+
     // Use your actual Cloudflare Worker URL
     const proxyUrl = "https://plain-base-b92a.webquantum3.workers.dev/api-key";
 
@@ -118,15 +129,34 @@ async function generateChatResponse(userMessage, messageHistory) {
       }
     );
 
+    // Check if the response was successful
+    if (!response.ok) {
+      console.log(`API error: ${response.status} ${response.statusText}`);
+      // If we hit a payment/rate limit error (402, 429), use fallback responses
+      if (response.status === 402 || response.status === 429) {
+        console.log("Using fallback response due to API limits");
+        return getFallbackResponse(userMessage);
+      }
+      return "I'm having trouble connecting right now. Please try again in a moment.";
+    }
+
     // Parse the response
     const result = await response.json();
-    
+
     // Handle different response formats
     let aiResponse = "";
     if (Array.isArray(result) && result.length > 0) {
       aiResponse = result[0].generated_text;
     } else if (result.generated_text) {
       aiResponse = result.generated_text;
+    } else if (result.error) {
+      console.error("API returned an error:", result.error);
+      // If the error mentions credits or rate limits, use fallback
+      if (result.error.includes("credits") || result.error.includes("rate limit")) {
+        console.log("Using fallback response due to API limits");
+        return getFallbackResponse(userMessage);
+      }
+      return "I'm having trouble connecting right now. Please try again in a moment.";
     } else {
       console.error("Unexpected API response format:", result);
       return "I'm having trouble connecting right now. Please try again in a moment.";
@@ -144,7 +174,9 @@ async function generateChatResponse(userMessage, messageHistory) {
     return aiResponse;
   } catch (error) {
     console.error("Error calling Hugging Face API:", error);
-    return "I'm having trouble connecting right now. Please try again in a moment.";
+    // Use fallback responses for any API errors
+    console.log("Using fallback response due to API error");
+    return getFallbackResponse(userMessage);
   }
 }
 
@@ -153,6 +185,10 @@ const fallbackResponses = {
   greeting: "Hello! I'm Bruno's AI Assistant. Bruno is an IT professional specializing in Agentic Tools, web & software development, cloud infrastructure, and data science. How can I help you learn more about Bruno's experience and skills today?",
   experience: "Bruno has over 5 years of experience in IT, with expertise in web development, cloud infrastructure, and data science. He has worked on Laravel e-commerce sites, AI models, monitoring dashboards, and security audits.",
   skills: "Bruno's technical skills include JavaScript/React for frontend, PHP/Laravel and Python for backend, AWS for cloud infrastructure, and various data science tools including TensorFlow and Pandas.",
+  projects: "Bruno has worked on several notable projects, including a Laravel e-commerce platform with AWS deployment, custom software packages like the Bagisto Mpesa payment integration, and AI models for income prediction using classification techniques.",
+  education: "Bruno has a Bachelor of Technology in IT from Delhi Technological University, along with certifications in AWS, Cloud Computing, and Data Science.",
+  contact: "You can contact Bruno through the contact form on this website. He's currently available for freelance work and full-time opportunities.",
+  security: "Bruno takes security seriously in all his projects, implementing OWASP best practices, secure API handling, and data protection measures as demonstrated in this very website.",
   default: "Thanks for your message. I'm Bruno's AI Assistant, and I'd be happy to tell you more about Bruno's skills and experience."
 };
 
@@ -163,18 +199,78 @@ const fallbackResponses = {
  */
 function getFallbackResponse(message) {
   const lowerMessage = message.toLowerCase();
-  
-  if (lowerMessage.match(/^(hi|hello|hey|greetings)/)) {
+
+  // Check for greetings
+  if (lowerMessage.match(/^(hi|hello|hey|greetings|howdy|good (morning|afternoon|evening))/)) {
     return fallbackResponses.greeting;
-  } else if (lowerMessage.includes("experience")) {
-    return fallbackResponses.experience;
-  } else if (lowerMessage.includes("skills")) {
-    return fallbackResponses.skills;
-  } else {
-    return fallbackResponses.default;
   }
+
+  // Check for experience-related questions
+  if (lowerMessage.includes("experience") ||
+      lowerMessage.includes("background") ||
+      lowerMessage.includes("work history") ||
+      lowerMessage.includes("worked at") ||
+      lowerMessage.includes("career")) {
+    return fallbackResponses.experience;
+  }
+
+  // Check for skills-related questions
+  if (lowerMessage.includes("skills") ||
+      lowerMessage.includes("technologies") ||
+      lowerMessage.includes("programming") ||
+      lowerMessage.includes("languages") ||
+      lowerMessage.includes("frameworks") ||
+      lowerMessage.includes("tools") ||
+      lowerMessage.includes("tech stack")) {
+    return fallbackResponses.skills;
+  }
+
+  // Check for project-related questions
+  if (lowerMessage.includes("project") ||
+      lowerMessage.includes("portfolio") ||
+      lowerMessage.includes("built") ||
+      lowerMessage.includes("developed") ||
+      lowerMessage.includes("created") ||
+      lowerMessage.includes("implemented")) {
+    return fallbackResponses.projects;
+  }
+
+  // Check for education-related questions
+  if (lowerMessage.includes("education") ||
+      lowerMessage.includes("degree") ||
+      lowerMessage.includes("university") ||
+      lowerMessage.includes("college") ||
+      lowerMessage.includes("certification") ||
+      lowerMessage.includes("study") ||
+      lowerMessage.includes("qualification")) {
+    return fallbackResponses.education;
+  }
+
+  // Check for contact-related questions
+  if (lowerMessage.includes("contact") ||
+      lowerMessage.includes("email") ||
+      lowerMessage.includes("reach") ||
+      lowerMessage.includes("available") ||
+      lowerMessage.includes("hire") ||
+      lowerMessage.includes("get in touch")) {
+    return fallbackResponses.contact;
+  }
+
+  // Check for security-related questions
+  if (lowerMessage.includes("security") ||
+      lowerMessage.includes("secure") ||
+      lowerMessage.includes("protection") ||
+      lowerMessage.includes("privacy") ||
+      lowerMessage.includes("encryption") ||
+      lowerMessage.includes("api key")) {
+    return fallbackResponses.security;
+  }
+
+  // Default response for other questions
+  return fallbackResponses.default;
 }
 
-// Export the functions
+// Export the functions and data
 window.generateChatResponse = generateChatResponse;
 window.getFallbackResponse = getFallbackResponse;
+window.fallbackResponses = fallbackResponses;
