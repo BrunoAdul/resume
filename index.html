@@ -319,6 +319,12 @@
             transform: scale(1.05);
         }
 
+        .thinking-text {
+            color: #666;
+            font-style: italic;
+            margin-right: 5px;
+        }
+
         .thinking-dots span {
             display: inline-block;
             width: 5px;
@@ -3151,10 +3157,13 @@
                     // Scroll to bottom
                     chatMessages.scrollTop = chatMessages.scrollHeight;
 
-                    // Simulate thinking
+                    // Simulate thinking with improved indicator
                     chatMessages.innerHTML += `
                         <div class="chat-message bot thinking">
-                            <p><span class="thinking-dots"><span>.</span><span>.</span><span>.</span></span></p>
+                            <p>
+                                <span class="thinking-text">Bruno's AI is thinking</span>
+                                <span class="thinking-dots"><span>.</span><span>.</span><span>.</span></span>
+                            </p>
                         </div>
                     `;
 
@@ -3201,12 +3210,45 @@
                             // Check if this is a fallback response
                             const isFallback = Object.values(window.fallbackResponses || {}).includes(aiResponse);
 
-                            // Add bot response
-                            chatMessages.innerHTML += `
-                                <div class="chat-message bot">
-                                    <p>${aiResponse}</p>
-                                </div>
-                            `;
+                            // Create a new message element for the bot response
+                            const botMessageDiv = document.createElement('div');
+                            botMessageDiv.className = 'chat-message bot';
+
+                            // Create paragraph for the text
+                            const messagePara = document.createElement('p');
+                            botMessageDiv.appendChild(messagePara);
+
+                            // Add the empty message div to the chat
+                            chatMessages.appendChild(botMessageDiv);
+
+                            // Function to simulate typing effect
+                            function typeMessage(text, element, speed = 30) {
+                                let i = 0;
+                                // Clear any existing content
+                                element.textContent = '';
+
+                                // Function to add one character at a time
+                                function addNextChar() {
+                                    if (i < text.length) {
+                                        // Add the next character
+                                        element.textContent += text.charAt(i);
+                                        i++;
+
+                                        // Scroll to bottom as text appears
+                                        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                                        // Random slight variation in typing speed for realism
+                                        const randomDelay = speed + Math.random() * 20 - 10;
+                                        setTimeout(addNextChar, randomDelay);
+                                    }
+                                }
+
+                                // Start the typing effect
+                                addNextChar();
+                            }
+
+                            // Start typing effect for the bot response
+                            typeMessage(aiResponse, messagePara);
 
                             // Add fallback mode indicator if needed
                             if (isFallback && !document.querySelector('.fallback-mode-indicator')) {
@@ -3264,12 +3306,45 @@
                                 chatMessages.removeChild(thinkingMessage);
                             }
 
-                            // Add bot response with fallback
-                            chatMessages.innerHTML += `
-                                <div class="chat-message bot">
-                                    <p>${fallbackResponse}</p>
-                                </div>
-                            `;
+                            // Create a new message element for the fallback response
+                            const fallbackMessageDiv = document.createElement('div');
+                            fallbackMessageDiv.className = 'chat-message bot';
+
+                            // Create paragraph for the text
+                            const fallbackPara = document.createElement('p');
+                            fallbackMessageDiv.appendChild(fallbackPara);
+
+                            // Add the empty message div to the chat
+                            chatMessages.appendChild(fallbackMessageDiv);
+
+                            // Function to simulate typing effect (defined again to ensure it's in scope)
+                            function typeMessage(text, element, speed = 30) {
+                                let i = 0;
+                                // Clear any existing content
+                                element.textContent = '';
+
+                                // Function to add one character at a time
+                                function addNextChar() {
+                                    if (i < text.length) {
+                                        // Add the next character
+                                        element.textContent += text.charAt(i);
+                                        i++;
+
+                                        // Scroll to bottom as text appears
+                                        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                                        // Random slight variation in typing speed for realism
+                                        const randomDelay = speed + Math.random() * 20 - 10;
+                                        setTimeout(addNextChar, randomDelay);
+                                    }
+                                }
+
+                                // Start the typing effect
+                                addNextChar();
+                            }
+
+                            // Start typing effect for the fallback response
+                            typeMessage(fallbackResponse, fallbackPara);
 
                             // Add fallback mode indicator if not already present
                             if (!document.querySelector('.fallback-mode-indicator')) {
