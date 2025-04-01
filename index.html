@@ -351,18 +351,17 @@
             position: absolute;
             bottom: 70px;
             right: 0;
-            width: 250px;
+            width: 280px;
             background: white;
             border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            padding: 12px 15px;
-            animation: notification-slide-in 0.5s ease forwards;
-            transform-origin: bottom right;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            padding: 15px;
             z-index: 999;
-            display: flex;
+            display: none; /* Hidden by default */
             justify-content: space-between;
             align-items: flex-start;
             border-left: 4px solid var(--primary);
+            font-weight: 500;
         }
 
         @keyframes notification-slide-in {
@@ -389,19 +388,26 @@
             border: none;
             color: var(--gray);
             cursor: pointer;
-            font-size: 14px;
-            padding: 0;
+            font-size: 16px;
+            padding: 5px;
             margin-left: 10px;
             transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
         }
 
         .chat-notification-close:hover {
             color: var(--dark);
             transform: scale(1.2);
+            background-color: rgba(0,0,0,0.05);
         }
 
         .chat-notification.hidden {
-            display: none;
+            display: none !important;
         }
 
         .hero-content {
@@ -1791,8 +1797,8 @@
                     <p><i class="fas fa-star"></i> <strong></strong>Relevant Coursework:</strong></p>
                     <div class="coursework-grid">
                         <span class="course-item">Data Structures</span>
-                        <span class="course-item">Algorithms</span>
-                        <span class="course-item">Math & Physics Foundations</span>
+                        <span class="course-item">Algorithms Design & Analysis</span>
+                        <span class="course-item">Computer Networks</span>
                         <span class="course-item">Operating Systems</span>
                         <span class="course-item">Database Management</span>
                         <span class="course-item">Software Development</span>
@@ -1801,6 +1807,7 @@
                         <span class="course-item">Machine Learning</span>
                         <span class="course-item">Computer Networks</span>
                         <span class="course-item">Web Development</span>
+                        <span class="course-item">Pattern Recognition...</span>
                     </div>
                 </div>
             </div>
@@ -3078,8 +3085,8 @@
                     <i class="fas fa-comment"></i>
                 </div>
                 <div class="chat-notification">
-                    <p>Hi, I'm Bruno's AI Assistant! Ask me about Bruno's skills and experience.</p>
-                    <button class="chat-notification-close"><i class="fas fa-times"></i></button>
+                    <p><strong>👋 Hi there!</strong> I'm Bruno's AI Assistant! Ask me about Bruno's skills and experience.</p>
+                    <button type="button" class="chat-notification-close"><i class="fas fa-times"></i></button>
                 </div>
                 <div class="chat-bubble-content">
                     <div class="chat-bubble-header">
@@ -3109,31 +3116,7 @@
             const chatNotification = chatBubble.querySelector('.chat-notification');
             const chatNotificationCloseBtn = chatBubble.querySelector('.chat-notification-close');
 
-            // Show notification after a short delay
-            setTimeout(() => {
-                if (chatNotification && !sessionStorage.getItem('notificationDismissed')) {
-                    chatNotification.style.display = 'flex';
-                }
-            }, 3000);
-
-            // Handle notification close button
-            if (chatNotificationCloseBtn) {
-                chatNotificationCloseBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    chatNotification.classList.add('hidden');
-                    sessionStorage.setItem('notificationDismissed', 'true');
-                });
-            }
-
-            // Handle clicking on the notification to open chat
-            if (chatNotification) {
-                chatNotification.addEventListener('click', () => {
-                    chatContent.classList.add('active');
-                    chatIcon.classList.add('hidden');
-                    chatNotification.classList.add('hidden');
-                    sessionStorage.setItem('notificationDismissed', 'true');
-                });
-            }
+            // Notification handling is done in the separate script at the end of the file
 
             // Toggle chat window
             chatIcon.addEventListener('click', () => {
@@ -3357,5 +3340,51 @@
 
     <!-- Contact form script -->
     <script src="contact-form.js"></script>
+
+    <!-- Dead simple notification script with 2-second delay -->
+    <script>
+        // Show notification after 2 seconds on EVERY page load
+        window.addEventListener('load', function() {
+            // Create notification sound
+            var sound = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAAFWgD///////////////////////////////////////////8AAAA8TEFNRTMuMTAwAc0AAAAAAAAAABSAJAJAQgAAgAAAA+gZ4iQCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//sQZAAP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAETEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVU=");
+
+            // Wait exactly 2 seconds then show notification
+            setTimeout(function() {
+                // Play sound
+                sound.play();
+
+                // Show notification
+                var notification = document.querySelector('.chat-notification');
+                if (notification) {
+                    notification.style.display = 'flex';
+                }
+
+                // Add close button handler
+                var closeBtn = document.querySelector('.chat-notification-close');
+                if (closeBtn) {
+                    closeBtn.onclick = function(e) {
+                        e.stopPropagation();
+                        notification.style.display = 'none';
+                        return false;
+                    };
+                }
+
+                // Add notification click handler
+                if (notification) {
+                    notification.onclick = function() {
+                        // Open chat
+                        var chatContent = document.querySelector('.chat-bubble-content');
+                        var chatIcon = document.querySelector('.chat-bubble-icon');
+
+                        if (chatContent) chatContent.classList.add('active');
+                        if (chatIcon) chatIcon.classList.add('hidden');
+
+                        // Hide notification
+                        notification.style.display = 'none';
+                   };
+                 }
+            }, 5000); // 5 seconds delay
+        });
+    </script>
 </body>
 </html>
