@@ -1,4 +1,104 @@
-# Professional Resume Website with AI Chat Integration
+# Bruno Adul - Portfolio Website
+
+This is the repository for Bruno Adul's professional portfolio website.
+
+## Project Structure
+
+The codebase has been refactored and organized as follows:
+
+- `index.php` - Main HTML content of the website
+- `style.css` - All CSS styles for the website
+- `main.js` - Main JavaScript functionality
+- `play-sound.js` - Script for handling notification sounds
+- `llm-chat.js` - Script for handling the chat functionality with LLM integration
+- `chat-collector.js` - Script for collecting chat data
+- `contact-form.js` - Script for handling the contact form
+
+## Features
+
+- Responsive design that works on all devices
+- Interactive timeline with typing animation
+- Chat functionality with AI integration
+- Notification system with sound
+- Contact form
+- PDF resume download functionality
+- Animated sections and components
+
+## How to Run
+
+1. Ensure you have a PHP server installed (like XAMPP, WAMP, or built-in PHP server)
+2. Clone this repository to your local machine
+3. Start your PHP server and navigate to the project directory
+4. Access the website through your browser
+
+## Browser Compatibility
+
+The website is compatible with all modern browsers:
+- Chrome
+- Firefox
+- Safari
+- Edge
+
+## Dependencies
+
+- Font Awesome 6.0.0 for icons
+- No other external libraries are required
+
+## Notes
+
+- The notification sound plays 5 seconds after page load
+- The resume download button is configured to work on all browsers and devices
+- All JavaScript functionality is modularized for better maintainability# Bruno Adul - Portfolio Website
+
+This is the repository for Bruno Adul's professional portfolio website.
+
+## Project Structure
+
+The codebase has been refactored and organized as follows:
+
+- `index.php` - Main HTML content of the website
+- `style.css` - All CSS styles for the website
+- `main.js` - Main JavaScript functionality
+- `play-sound.js` - Script for handling notification sounds
+- `llm-chat.js` - Script for handling the chat functionality with LLM integration
+- `chat-collector.js` - Script for collecting chat data
+- `contact-form.js` - Script for handling the contact form
+
+## Features
+
+- Responsive design that works on all devices
+- Interactive timeline with typing animation
+- Chat functionality with AI integration
+- Notification system with sound
+- Contact form
+- PDF resume download functionality
+- Animated sections and components
+
+## How to Run
+
+1. Ensure you have a PHP server installed (like XAMPP, WAMP, or built-in PHP server)
+2. Clone this repository to your local machine
+3. Start your PHP server and navigate to the project directory
+4. Access the website through your browser
+
+## Browser Compatibility
+
+The website is compatible with all modern browsers:
+- Chrome
+- Firefox
+- Safari
+- Edge
+
+## Dependencies
+
+- Font Awesome 6.0.0 for icons
+- No other external libraries are required
+
+## Notes
+
+- The notification sound plays 5 seconds after page load
+- The resume download button is configured to work on all browsers and devices
+- All JavaScript functionality is modularized for better maintainability# Professional Resume Website with AI Chat Integration
 
 A modern, responsive resume website featuring an AI-powered chat interface that allows visitors to engage with your professional background in an interactive way. Built with security and performance in mind.
 

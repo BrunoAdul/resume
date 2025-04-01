@@ -1614,10 +1614,54 @@
             <li><a href="#certifications">Certifications</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
-        <a href="Resume.pdf" download class="cv-download">
+        <a href="Resume.pdf" download="resume.pdf" type="application/pdf" class="cv-download" id="download-cv-btn">
             <i class="fas fa-download"></i>
             <span>Download CV</span>
         </a>
+
+        <script>
+            // Ensure the download works in all browsers
+            document.addEventListener('DOMContentLoaded', function() {
+                var downloadBtn = document.getElementById('download-cv-btn');
+                if (downloadBtn) {
+                    downloadBtn.addEventListener('click', function(e) {
+                        // For browsers that don't support the download attribute
+                        var isIE = /*@cc_on!@*/false || !!document.documentMode;
+                        var isEdge = !isIE && !!window.StyleMedia;
+                        var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+                        if (isIE || isEdge || isSafari) {
+                            e.preventDefault();
+
+                            // Create a server-side approach with proper headers
+                            var xhr = new XMLHttpRequest();
+                            xhr.open('GET', 'Resume.pdf', true);
+                            xhr.responseType = 'blob';
+
+                            xhr.onload = function() {
+                                if (this.status === 200) {
+                                    // Create blob link to download
+                                    var blob = new Blob([this.response], { type: 'application/pdf' });
+                                    var url = window.URL.createObjectURL(blob);
+                                    var a = document.createElement('a');
+                                    a.style.display = 'none';
+                                    a.href = url;
+                                    a.download = 'resume.pdf';
+                                    document.body.appendChild(a);
+                                    a.click();
+
+                                    // Clean up
+                                    window.URL.revokeObjectURL(url);
+                                    document.body.removeChild(a);
+                                }
+                            };
+
+                            xhr.send();
+                        }
+                    });
+                }
+            });
+        </script>
     </div>
 </nav>
 
