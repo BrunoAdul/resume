@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Sound Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #3498db;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .sound-test {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        code {
+            background-color: #f1f1f1;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Notification Sound Test</h1>
+    <p>This page allows you to test if the notification sounds are working correctly.</p>
+
+    <div class="sound-test">
+        <h2>Test WAV Sound</h2>
+        <p>Click the button below to test the WAV notification sound:</p>
+        <button id="test-wav">Play notification.wav</button>
+        <div id="wav-result" class="result"></div>
+    </div>
+
+    <div class="sound-test">
+        <h2>Test MP3 Sound</h2>
+        <p>Click the button below to test the MP3 notification sound:</p>
+        <button id="test-mp3">Play notification.mp3</button>
+        <div id="mp3-result" class="result"></div>
+    </div>
+
+    <div class="sound-test">
+        <h2>Test Fallback Sound</h2>
+        <p>Click the button below to test the fallback notification sound:</p>
+        <button id="test-fallback">Play Fallback Sound</button>
+        <div id="fallback-result" class="result"></div>
+    </div>
+
+    <h2>Troubleshooting</h2>
+    <p>If the sounds don't play:</p>
+    <ol>
+        <li>Make sure the sound files exist in the assets directory</li>
+        <li>Check that the files are valid audio files (not empty or corrupted)</li>
+        <li>Some browsers require user interaction before playing sounds</li>
+        <li>Try a different browser (Chrome, Firefox, Safari)</li>
+    </ol>
+
+    <script>
+        // Function to test sound playback
+        function testSound(soundPath, resultElementId) {
+            const resultElement = document.getElementById(resultElementId);
+            resultElement.className = 'result';
+            resultElement.textContent = 'Testing...';
+
+            const audio = new Audio(soundPath);
+            
+            audio.addEventListener('canplaythrough', () => {
+                console.log(`Sound loaded: ${soundPath}`);
+            });
+
+            const playPromise = audio.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    console.log(`Sound played successfully: ${soundPath}`);
+                    resultElement.className = 'result success';
+                    resultElement.textContent = '✓ Sound played successfully!';
+                }).catch(error => {
+                    console.error(`Error playing sound: ${error}`);
+                    resultElement.className = 'result error';
+                    resultElement.textContent = `✗ Error: ${error.message}`;
+                });
+            } else {
+                // Older browsers that don't return a promise
+                resultElement.className = 'result success';
+                resultElement.textContent = '✓ Sound playback initiated (browser doesn\'t support promise feedback)';
+            }
+        }
+
+        // Set up event listeners
+        document.getElementById('test-wav').addEventListener('click', () => {
+            testSound('notification.wav', 'wav-result');
+        });
+
+        document.getElementById('test-mp3').addEventListener('click', () => {
+            testSound('notification.mp3', 'mp3-result');
+        });
+
+        document.getElementById('test-fallback').addEventListener('click', () => {
+            testSound('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAAFWgD///////////////////////////////////////////8AAAA8TEFNRTMuMTAwAc0AAAAAAAAAABSAJAJAQgAAgAAAA+gZ4iQCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//sQZAAP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAETEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVU=', 'fallback-result');
+        });
+    </script>
+</body>
+</html>
