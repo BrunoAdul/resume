@@ -29,7 +29,3 @@ This project is being developed over time with regular updates and improvements.
 ## Contact
 
 For any questions or inquiries, please use the contact form on the website.
-
-## Final polish and future-proofing
-
-Applied final polish and future-proofing measures. Updated dependencies, improved documentation, and ensured compatibility with the latest web standards.
