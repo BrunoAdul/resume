@@ -200,3 +200,7 @@ Applied final polish and future-proofing measures. Updated dependencies, improve
 ## Initial commit - Basic HTML structure for resume
 
 Created the foundation of the resume website with basic HTML structure. Implemented a simple layout with sections for personal information, education, and work experience.
+
+## Final polish and future-proofing
+
+Applied final polish and future-proofing measures. Updated dependencies, improved documentation, and ensured compatibility with the latest web standards.
