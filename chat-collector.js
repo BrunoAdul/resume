@@ -3,50 +3,49 @@
 // It also provides a backup method using localStorage
 
 // Configuration for the Google Form
-// For GitHub Pages, we'll use a hardcoded form ID with an obfuscation technique
+// Using a direct form ID for simplicity and reliability
 const FORM_CONFIG = {
-    // This is an obfuscated form ID that will be decoded at runtime
-    formId: "", // Will be set at runtime
+    formId: "1FAIpQLSe6YxU3_LUzvKC80VfXaxWVjSe_JtQDelX6ULPSaCU8M5SF-g", // Direct form ID for chat data
     fields: {
-        timestamp: "entry.123456789",
-        userMessage: "entry.234567890",
-        botResponse: "entry.345678901",
-        userAgent: "entry.456789012",
-        referrer: "entry.567890123"
+        // Note: We don't need a timestamp field as Google Forms records this automatically
+        conversationId: "entry.335428706", // Conversation ID field
+        userMessage: "entry.1415634410", // User message field
+        botResponse: "entry.431915707", // Bot response field
+        userAgent: "entry.2088488122", // User agent field
+        referrer: "entry.1105825235" // Referrer field
     }
 };
 
-// Function to securely get the form ID
+// We're now using a direct form ID, so we don't need to fetch it securely
+// This function is kept for backward compatibility but doesn't do anything
 async function getSecureFormId() {
-    try {
-        // Use your actual Cloudflare Worker URL
-        const proxyUrl = "https://plain-base-b92a.webquantum3.workers.dev/form-id";
-
-        // Add a random parameter to prevent caching
-        const response = await fetch(`${proxyUrl}?t=${Date.now()}`, {
-            method: "GET",
-            headers: {
-                // Add a secret token that only your proxy knows
-                "X-Auth-Token": "bruno-resume-2024"
-            }
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            if (data && data.formId) {
-                FORM_CONFIG.formId = data.formId;
-                return true;
-            }
-        }
-        return false;
-    } catch (error) {
-        console.log("Error fetching form ID, using backup storage only");
-        return false;
-    }
+    // Form ID is already set in the FORM_CONFIG
+    return true;
 }
 
-// Initialize the form ID
-getSecureFormId();
+// No need to initialize the form ID as it's already set
+// This line is kept for backward compatibility
+// getSecureFormId();
+
+// Generate a unique conversation ID for this session
+let currentConversationId = '';
+
+// Function to get or create a conversation ID
+function getConversationId() {
+    if (!currentConversationId) {
+        // Generate a new ID if we don't have one
+        currentConversationId = 'conv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
+        // Store it in sessionStorage so it persists across page reloads but not across sessions
+        sessionStorage.setItem('currentChatConversationId', currentConversationId);
+    }
+    return currentConversationId;
+}
+
+// Initialize conversation ID from sessionStorage if available
+if (sessionStorage.getItem('currentChatConversationId')) {
+    currentConversationId = sessionStorage.getItem('currentChatConversationId');
+}
 
 // Send chat data to Google Form
 function sendChatToGoogleForm(messageData) {
@@ -61,13 +60,18 @@ function sendChatToGoogleForm(messageData) {
     // Create the data to send
     const formData = new FormData();
 
-    // Add the message data to the form using actual entry IDs from your Google Form
-    // Update these with the actual entry IDs from your form
-    formData.append('entry.1234567895', messageData.timestamp); // Timestamp field
-    formData.append('entry.1234567896', messageData.userMessage); // User message field
-    formData.append('entry.1234567897', messageData.botResponse); // Bot response field
-    formData.append('entry.1234567898', messageData.userAgent); // User agent field
-    formData.append('entry.1234567899', messageData.referrer); // Referrer field
+    // Get or create a conversation ID
+    const conversationId = getConversationId();
+
+    // Add the message data to the form using the configured entry IDs
+    // Note: We don't need to send a timestamp as Google Forms records this automatically
+    if (FORM_CONFIG.fields.conversationId) {
+        formData.append(FORM_CONFIG.fields.conversationId, conversationId); // Conversation ID field
+    }
+    formData.append(FORM_CONFIG.fields.userMessage, messageData.userMessage); // User message field
+    formData.append(FORM_CONFIG.fields.botResponse, messageData.botResponse); // Bot response field
+    formData.append(FORM_CONFIG.fields.userAgent, messageData.userAgent); // User agent field
+    formData.append(FORM_CONFIG.fields.referrer, messageData.referrer); // Referrer field
 
     // Send the data to the Google Form
     fetch(`https://docs.google.com/forms/d/e/${FORM_CONFIG.formId}/formResponse`, {

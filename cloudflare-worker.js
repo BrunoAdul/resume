@@ -15,9 +15,10 @@ addEventListener('fetch', event => {
 });
 
 async function handleRequest(request) {
-  // Set up CORS headers to allow your GitHub Pages site
+  // Set up CORS headers to allow your GitHub Pages site and localhost for development
   const corsHeaders = {
-    'Access-Control-Allow-Origin': 'https://brunoadul.github.io', // Change to your GitHub Pages domain
+    // Get the origin from the request and allow it if it's from our domains
+    'Access-Control-Allow-Origin': request.headers.get('Origin') || '*',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, X-Auth-Token',
   };
